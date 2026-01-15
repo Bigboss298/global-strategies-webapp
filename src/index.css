@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+/* TBP Brand Colors */
+:root {
+  --tbp-primary-green: #05A346;
+  --tbp-deep-navy: #183A64;
+  --tbp-dark-slate: #293749;
+  --tbp-soft-white: #FEFEFE;
+  
+  /* Semantic color aliases */
+  --tbp-primary: var(--tbp-primary-green);
+  --tbp-secondary: var(--tbp-deep-navy);
+  --tbp-text-primary: var(--tbp-dark-slate);
+  --tbp-background: var(--tbp-soft-white);
+}
+
+/* LinkedIn-inspired Global Styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #F3F2EF;
+  color: var(--tbp-text-primary);
+}
+
+/* LinkedIn-style Card Shadows */
+.tbp-card-shadow {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.tbp-card-shadow-hover:hover {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* LinkedIn-style Borders */
+.tbp-border {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Smooth Transitions */
+.tbp-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F3F2EF;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C4C4C4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A0A0A0;
+}
