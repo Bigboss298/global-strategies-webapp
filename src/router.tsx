@@ -16,7 +16,6 @@ import { RegisterTeamMember } from './pages/auth/RegisterTeamMember'
 import { ForgotPassword } from './pages/auth/ForgotPassword'
 
 // Admin Pages
-import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminOverview from './pages/admin/AdminOverview'
 import Organizations from './pages/admin/Organizations'
 import Users from './pages/admin/Users'

@@ -50,6 +50,15 @@ export const authApi = {
   },
 
   /**
+   * Request password reset
+   * POST /api/auth/forgot-password
+   */
+  forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
+    const response = await axiosInstance.post<{ success: boolean; message: string }>('/auth/forgot-password', { email })
+    return response.data
+  },
+
+  /**
    * Revoke a refresh token
    * POST /api/auth/revoke-token
    */

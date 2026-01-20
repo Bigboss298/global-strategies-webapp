@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { adminApi } from '../../api/admin.api'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
-import type { Project, Category } from '../../types'
+import type { Project } from '../../types'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Textarea } from '../../components/ui/Textarea'

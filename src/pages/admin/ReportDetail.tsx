@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { adminApi } from '../../api/admin.api'
-import { reportsApi } from '../../api/reports.api'
 import { reactionsApi } from '../../api/reactions.api'
 import { authStore } from '../../store/authStore'
 import { ArrowLeft, Heart, ThumbsUp, ThumbsDown, MessageCircle, Trash2 } from 'lucide-react'

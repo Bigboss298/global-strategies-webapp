@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { strategistStore } from '../../store/strategistStore'
 import { authStore } from '../../store/authStore'
-import { authApi } from '../../api/auth.api'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Textarea } from '../../components/ui/Textarea'

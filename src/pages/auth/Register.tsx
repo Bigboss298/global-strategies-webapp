@@ -4,7 +4,7 @@ import { authStore } from '../../store/authStore'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Label } from '../../components/ui/Label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/Card'
+import { Card } from '../../components/ui/Card'
 import type { RegisterIndividualRequest, RegisterCorporateRequest } from '../../types'
 
 type RegistrationType = 'individual' | 'corporate'

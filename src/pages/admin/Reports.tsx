@@ -4,15 +4,12 @@ import { adminApi } from '../../api/admin.api'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
 import { FileText, Trash2, Filter, X, Eye } from 'lucide-react'
 
-type FilterType = 'all' | 'category' | 'project' | 'field'
-
 export const Reports = () => {
   const navigate = useNavigate()
   const { categories, projects, fields, fetchCategories, fetchProjects, fetchFields } = adminDashboardStore()
   const [reports, setReports] = useState<any[]>([])
   const [filteredReports, setFilteredReports] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [filterType, setFilterType] = useState<FilterType>('all')
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
   const [selectedProjectId, setSelectedProjectId] = useState<string>('')
   const [selectedFieldId, setSelectedFieldId] = useState<string>('')

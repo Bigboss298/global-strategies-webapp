@@ -2,10 +2,12 @@
 export interface User {
   id: string
   fullName?: string
+  name?: string
   firstName: string
   lastName: string
   email: string
   headline?: string
+  bio?: string
   country?: string
   countryName?: string
   profilePhotoUrl?: string
@@ -96,6 +98,7 @@ export interface Category {
 export interface Field {
   id: string
   name: string
+  description?: string
   projectId: string
   dateCreated: string
   dateUpdated?: string
@@ -175,6 +178,7 @@ export interface Report {
   dateUpdated?: string
   createdAt?: string
   updatedAt?: string
+  strategistProfilePhotoUrl?: string
 }
 
 export interface ReactionSummary {

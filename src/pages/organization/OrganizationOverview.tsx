@@ -1,35 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { organizationDashboardStore } from '../../store/organization/organizationDashboardStore'
 import { authStore } from '../../store/authStore'
 import { CountryFlag } from '../../components/ui/CountryFlag'
-import { corporateApi } from '../../api/corporate.api'
-import type { CorporateDashboard } from '../../api/corporate.api'
-import { Users } from 'lucide-react'
 
 export default function OrganizationOverview() {
   const user = authStore((state) => state.user)
   const { strategists, reports, fetchOrganizationStrategists, fetchOrganizationReports, setOrganizationId } = organizationDashboardStore()
-  const [dashboard, setDashboard] = useState<CorporateDashboard | null>(null)
 
   useEffect(() => {
     if (user?.corporateAccountId) {
       setOrganizationId(user.corporateAccountId)
       fetchOrganizationStrategists()
       fetchOrganizationReports()
-      fetchDashboard()
     }
   }, [user])
-
-  const fetchDashboard = async () => {
-    if (!user?.corporateAccountId) return
-    
-    try {
-      const data = await corporateApi.getDashboard(user.corporateAccountId)
-      setDashboard(data)
-    } catch (err) {
-      console.error('Failed to fetch dashboard:', err)
-    }
-  }
 
   const stats = [
     {
@@ -56,6 +40,7 @@ export default function OrganizationOverview() {
   return (
     <div className="space-y-6">
       {/* Member Slots Card */}
+      {/* Temporarily commendted out since payments has been deactivated */}
       {/* {dashboard && (
         <div className="bg-gradient-to-br from-[#05A346] to-[#048A3B] rounded-2xl p-6 text-[#FEFEFE] tbp-card-shadow">
           <div className="flex items-start justify-between">

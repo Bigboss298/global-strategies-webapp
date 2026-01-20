@@ -6,7 +6,6 @@ import { Input } from '../../components/ui/Input'
 import { Textarea } from '../../components/ui/Textarea'
 import { Label } from '../../components/ui/Label'
 import { Modal } from '../../components/ui/Modal'
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { Plus, Edit, Trash2, Search, ArrowUpDown } from 'lucide-react'
 
