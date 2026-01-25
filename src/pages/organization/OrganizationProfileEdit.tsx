@@ -21,7 +21,6 @@ export default function OrganizationProfileEdit({ onClose, onSave }: Organizatio
     lastName: '',
     headline: '',
     country: '',
-    profilePhotoUrl: '',
     certification: '',
     title: '',
     shortBio: '',
@@ -49,7 +48,6 @@ export default function OrganizationProfileEdit({ onClose, onSave }: Organizatio
           lastName: freshUserData.lastName || '',
           headline: freshUserData.headline || '',
           country: freshUserData.country || '',
-          profilePhotoUrl: freshUserData.profilePhotoUrl || '',
           certification: freshUserData.certification || '',
           title: freshUserData.title || '',
           shortBio: freshUserData.shortBio || '',
@@ -209,20 +207,6 @@ export default function OrganizationProfileEdit({ onClose, onSave }: Organizatio
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent"
                     placeholder="Enter your country"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Profile Photo URL
-                  </label>
-                  <input
-                    type="url"
-                    name="profilePhotoUrl"
-                    value={formData.profilePhotoUrl}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent"
-                    placeholder="https://example.com/photo.jpg"
                   />
                 </div>
               </div>

@@ -3,18 +3,21 @@ import { authStore } from '../../store/authStore'
 import { userApi } from '../../api/user.api'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import ProfileEdit from './ProfileEdit'
+import PDFViewerModal from '../../components/PDFViewerModal'
+import { downloadFile } from '../../utils/fileHelpers'
 import { 
   MapPin, 
   Briefcase, 
   Award, 
-  FileText, 
   Edit3,
   Calendar,
   Heart,
   MessageSquare,
   Lightbulb,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  Download,
+  Eye
 } from 'lucide-react'
 
 interface UserProfile {
@@ -37,6 +40,7 @@ export default function Profile() {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
+  const [isPDFModalOpen, setIsPDFModalOpen] = useState(false)
 
   // Fetch user profile and reports
   useEffect(() => {
@@ -188,15 +192,22 @@ export default function Profile() {
           {/* CV Download */}
           {profile.cvFileUrl && (
             <div className="border-t pt-6 mt-6">
-              <a
-                href={profile.cvFileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                <FileText className="w-4 h-4" />
-                Download CV/Resume
-              </a>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setIsPDFModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Eye className="w-4 h-4" />
+                  View CV/Resume
+                </button>
+                <button
+                  onClick={() => downloadFile(profile.cvFileUrl!, `${profile.firstName}_${profile.lastName}_CV.pdf`)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Download CV/Resume
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -293,6 +304,16 @@ export default function Profile() {
           )}
         </div>
       </div>
+
+      {/* PDF Viewer Modal */}
+      {profile?.cvFileUrl && (
+        <PDFViewerModal
+          isOpen={isPDFModalOpen}
+          onClose={() => setIsPDFModalOpen(false)}
+          pdfUrl={profile.cvFileUrl}
+          fileName={`${profile.firstName}_${profile.lastName}_CV.pdf`}
+        />
+      )}
     </>
   )
 }

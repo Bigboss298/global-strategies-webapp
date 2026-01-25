@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { authStore } from '../../store/authStore'
 import { userApi } from '../../api/user.api'
 import type { UpdateUserProfileData } from '../../api/user.api'
-import { User, Save, AlertCircle, CheckCircle, X } from 'lucide-react'
+import PDFViewerModal from '../../components/PDFViewerModal'
+import { downloadFile } from '../../utils/fileHelpers'
+import { User, Save, AlertCircle, CheckCircle, X, Eye, Download } from 'lucide-react'
 
 interface ProfileEditProps {
   onClose: () => void
@@ -21,12 +23,16 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
     lastName: '',
     headline: '',
     country: '',
-    profilePhotoUrl: '',
+    profilePhoto: undefined,
     certification: '',
     title: '',
     shortBio: '',
-    cvFileUrl: '',
+    cvFile: undefined,
   })
+  
+  const [currentPhotoUrl, setCurrentPhotoUrl] = useState('')
+  const [currentCvUrl, setCurrentCvUrl] = useState('')
+  const [isPDFModalOpen, setIsPDFModalOpen] = useState(false)
 
   // Fetch fresh user data from the database by ID
   useEffect(() => {
@@ -44,21 +50,29 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
         setUser(freshUserData)
         sessionStorage.setItem('user', JSON.stringify(freshUserData))
         
+        // Store current URLs for display
+        setCurrentPhotoUrl(freshUserData.profilePhotoUrl || '')
+        setCurrentCvUrl(freshUserData.cvFileUrl || '')
+        
         // Populate form with fresh data from database
         setFormData({
           firstName: freshUserData.firstName || '',
           lastName: freshUserData.lastName || '',
           headline: freshUserData.headline || '',
           country: freshUserData.country || '',
-          profilePhotoUrl: freshUserData.profilePhotoUrl || '',
           certification: freshUserData.certification || '',
           title: freshUserData.title || '',
           shortBio: freshUserData.shortBio || '',
-          cvFileUrl: freshUserData.cvFileUrl || '',
         })
       } catch (err: any) {
         console.error('Failed to fetch user profile:', err)
-        setError('Failed to load profile data')
+        const errorMessage = typeof err === 'string' 
+          ? err 
+          : err?.response?.data?.message 
+            || err?.response?.data?.title
+            || err?.message 
+            || 'Failed to load profile data'
+        setError(errorMessage)
       } finally {
         setIsLoading(false)
       }
@@ -99,7 +113,14 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
         onSave()
       }, 1500)
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update profile')
+      console.error('Profile update error:', err)
+      const errorMessage = typeof err === 'string'
+        ? err
+        : err?.response?.data?.message
+          || err?.response?.data?.title
+          || err?.message
+          || 'Failed to update profile'
+      setError(errorMessage)
     } finally {
       setIsSaving(false)
     }
@@ -213,16 +234,23 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Profile Photo URL
+                    Profile Photo (JPG, JPEG, PNG - Max 5MB)
                   </label>
+                  {currentPhotoUrl && (
+                    <div className="mb-2">
+                      <img src={currentPhotoUrl} alt="Current profile" className="w-20 h-20 rounded-full object-cover" />
+                      <p className="text-xs text-gray-500 mt-1">Current photo</p>
+                    </div>
+                  )}
                   <input
-                    type="url"
-                    name="profilePhotoUrl"
-                    value={formData.profilePhotoUrl}
-                    onChange={handleChange}
+                    type="file"
+                    accept=".jpg,.jpeg,.png"
+                    onChange={(e) => setFormData({ ...formData, profilePhoto: e.target.files?.[0] })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/photo.jpg"
                   />
+                  {formData.profilePhoto && (
+                    <p className="text-xs text-green-600 mt-1">New file selected: {formData.profilePhoto.name}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -297,17 +325,37 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CV/Resume URL
+                    CV/Resume (PDF only - Max 5MB)
                   </label>
+                  {currentCvUrl && (
+                    <div className="mb-3 flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setIsPDFModalOpen(true)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View Current CV
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => downloadFile(currentCvUrl, `${user?.firstName || 'User'}_${user?.lastName || 'CV'}.pdf`)}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                      >
+                        <Download className="w-4 h-4" />
+                        Download
+                      </button>
+                    </div>
+                  )}
                   <input
-                    type="url"
-                    name="cvFileUrl"
-                    value={formData.cvFileUrl}
-                    onChange={handleChange}
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => setFormData({ ...formData, cvFile: e.target.files?.[0] })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="https://example.com/cv.pdf"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Link to your CV or resume document</p>
+                  {formData.cvFile && (
+                    <p className="text-xs text-green-600 mt-1">New file selected: {formData.cvFile.name}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -333,6 +381,16 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
           </form>
         </div>
       </div>
+
+      {/* PDF Viewer Modal */}
+      {currentCvUrl && (
+        <PDFViewerModal
+          isOpen={isPDFModalOpen}
+          onClose={() => setIsPDFModalOpen(false)}
+          pdfUrl={currentCvUrl}
+          fileName={`${user?.firstName || 'User'}_${user?.lastName || 'CV'}.pdf`}
+        />
+      )}
     </div>
   )
 }

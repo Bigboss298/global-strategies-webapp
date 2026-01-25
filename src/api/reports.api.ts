@@ -46,7 +46,7 @@ export const reportsApi = {
 
     const response = await axiosInstance.post<Report>('/reports', formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': undefined, // Let browser set multipart/form-data with boundary
       },
     })
     return response.data

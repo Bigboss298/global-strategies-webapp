@@ -48,7 +48,7 @@ export interface RegisterIndividualRequest {
   certification: string
   title: string
   shortBio: string
-  cvFileUrl?: string
+  cvFile?: File
   country: string
 }
 
@@ -110,6 +110,7 @@ export interface Project {
   description?: string
   categoryId: string
   imageUrl?: string
+  image?: File  // for creation/update
   fields?: Field[]
   createdAt: string
   updatedAt: string

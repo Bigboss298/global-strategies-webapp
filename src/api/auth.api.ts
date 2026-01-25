@@ -22,7 +22,24 @@ export const authApi = {
    * POST /api/auth/register/individual
    */
   registerIndividual: async (data: RegisterIndividualRequest): Promise<AuthResponse> => {
-    const response = await axiosInstance.post<AuthResponse>('/auth/register/individual', data)
+    const formData = new FormData()
+    formData.append('firstName', data.firstName)
+    formData.append('lastName', data.lastName)
+    formData.append('email', data.email)
+    formData.append('password', data.password)
+    formData.append('certification', data.certification)
+    formData.append('title', data.title)
+    formData.append('shortBio', data.shortBio)
+    formData.append('country', data.country)
+    if (data.cvFile) {
+      formData.append('cvFile', data.cvFile)
+    }
+    
+    const response = await axiosInstance.post<AuthResponse>('/auth/register/individual', formData, {
+      headers: {
+        'Content-Type': undefined, // Let browser set multipart/form-data with boundary
+      },
+    })
     return response.data
   },
 

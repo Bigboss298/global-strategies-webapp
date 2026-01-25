@@ -75,7 +75,12 @@ export const authStore = create<AuthState>()((set, get) => ({
       
       return response.user
     } catch (error: any) {
-      const errorMessage = error.response?.data || error.message || 'Login failed'
+      const errorMessage = typeof error.response?.data === 'string'
+        ? error.response.data
+        : error.response?.data?.message
+          || error.response?.data?.title
+          || error.message
+          || 'Login failed'
       set({
         isLoading: false,
         error: errorMessage,
@@ -106,7 +111,12 @@ export const authStore = create<AuthState>()((set, get) => ({
         error: null,
       })
     } catch (error: any) {
-      const errorMessage = error.response?.data || error.message || 'Registration failed'
+      const errorMessage = typeof error.response?.data === 'string'
+        ? error.response.data
+        : error.response?.data?.message
+          || error.response?.data?.title
+          || error.message
+          || 'Registration failed'
       set({
         isLoading: false,
         error: errorMessage,
@@ -138,7 +148,12 @@ export const authStore = create<AuthState>()((set, get) => ({
         error: null,
       })
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'Corporate registration failed'
+      const errorMessage = typeof error.response?.data === 'string'
+        ? error.response.data
+        : error.response?.data?.message
+          || error.response?.data?.title
+          || error.message
+          || 'Corporate registration failed'
       set({
         isLoading: false,
         error: errorMessage,

@@ -14,7 +14,7 @@ export const Register = () => {
   const { registerIndividual, registerCorporate, isLoading, error, clearError } = authStore()
   const [registrationType, setRegistrationType] = useState<RegistrationType>('individual')
   
-  const [individualForm, setIndividualForm] = useState<RegisterIndividualRequest & { confirmPassword: string }>({
+  const [individualForm, setIndividualForm] = useState<Omit<RegisterIndividualRequest, 'cvFile'> & { confirmPassword: string; cvFile?: File }>({
     firstName: '',
     lastName: '',
     email: '',
@@ -23,7 +23,7 @@ export const Register = () => {
     certification: '',
     title: '',
     shortBio: '',
-    cvFileUrl: '',
+    cvFile: undefined,
     country: '',
   })
 
@@ -239,14 +239,16 @@ export const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="cvFileUrl">CV/Resume URL (Optional)</Label>
+                <Label htmlFor="cvFile">CV/Resume (Optional - PDF only)</Label>
                 <Input
-                  id="cvFileUrl"
-                  type="url"
-                  placeholder="https://example.com/cv.pdf"
-                  value={individualForm.cvFileUrl}
-                  onChange={(e) => setIndividualForm({ ...individualForm, cvFileUrl: e.target.value })}
+                  id="cvFile"
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setIndividualForm({ ...individualForm, cvFile: e.target.files?.[0] })}
                 />
+                {individualForm.cvFile && (
+                  <p className="text-sm text-[#293749]/70 mt-1">Selected: {individualForm.cvFile.name}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

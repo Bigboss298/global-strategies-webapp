@@ -6,11 +6,11 @@ export interface UpdateUserProfileData {
   lastName: string
   headline?: string
   country?: string
-  profilePhotoUrl?: string
+  profilePhoto?: File
   certification?: string
   title?: string
   shortBio?: string
-  cvFileUrl?: string
+  cvFile?: File
 }
 
 export const userApi = {
@@ -20,7 +20,22 @@ export const userApi = {
   },
 
   updateProfile: async (userId: string, data: UpdateUserProfileData): Promise<User> => {
-    const response = await axiosInstance.put<User>(`/user/${userId}`, data)
+    const formData = new FormData()
+    formData.append('firstName', data.firstName)
+    formData.append('lastName', data.lastName)
+    if (data.headline) formData.append('headline', data.headline)
+    if (data.country) formData.append('country', data.country)
+    if (data.certification) formData.append('certification', data.certification)
+    if (data.title) formData.append('title', data.title)
+    if (data.shortBio) formData.append('shortBio', data.shortBio)
+    if (data.profilePhoto) formData.append('profilePhoto', data.profilePhoto)
+    if (data.cvFile) formData.append('cvFile', data.cvFile)
+    
+    const response = await axiosInstance.put<User>(`/user/${userId}`, formData, {
+      headers: {
+        'Content-Type': undefined, // Let browser set multipart/form-data with boundary
+      },
+    })
     return response.data
   },
 
