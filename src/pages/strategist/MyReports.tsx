@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import { authStore } from '../../store/authStore'
+import TBPLoader from '../../components/TBPLoader'
 import { Plus, X } from 'lucide-react'
 
 const formatDate = (dateString: string | undefined) => {
@@ -98,7 +99,7 @@ export default function MyReports() {
   }
 
   if (isLoadingMyReports) {
-    return <div className="flex justify-center py-12">Loading your reports...</div>
+    return <TBPLoader />
   }
 
   return (

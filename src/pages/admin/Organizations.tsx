@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
+import { Plus } from 'lucide-react'
+import TBPLoader from '../../components/TBPLoader'
 
 type CorporateAccount = {
   id: string
@@ -75,7 +77,7 @@ export default function Organizations() {
   }
 
   if (isLoading) {
-    return <div className="flex justify-center py-12">Loading...</div>
+    return <TBPLoader />
   }
 
   return (
@@ -84,9 +86,10 @@ export default function Organizations() {
         <h2 className="text-2xl font-bold">Organizations</h2>
         <button
           onClick={handleCreate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="bg-[#05A346] hover:bg-[#048a3a] text-white p-2.5 rounded-lg transition-colors shadow-sm"
+          title="Add Organization"
         >
-          Add Organization
+          <Plus className="h-5 w-5" />
         </button>
       </div>
 

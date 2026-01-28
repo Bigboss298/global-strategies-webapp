@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { authStore } from '../../store/authStore'
 import { userApi } from '../../api/user.api'
 import type { UpdateUserProfileData } from '../../api/user.api'
+import TBPLoader from '../../components/TBPLoader'
 import { User, Save, AlertCircle, CheckCircle, X, Building2 } from 'lucide-react'
 
 interface OrganizationProfileEditProps {
@@ -105,7 +106,7 @@ export default function OrganizationProfileEdit({ onClose, onSave }: Organizatio
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-6">
-          <div className="text-gray-600">Loading profile data...</div>
+          <TBPLoader />
         </div>
       </div>
     )

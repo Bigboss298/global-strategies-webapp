@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
 import type { Field } from '../../types'
+import TBPLoader from '../../components/TBPLoader'
 import { Plus, Edit, Trash2, Search, ArrowUpDown } from 'lucide-react'
 
 export const Fields = () => {
@@ -91,7 +92,7 @@ export const Fields = () => {
   }, [fields, projects, searchQuery, sortBy, sortOrder])
 
   if (isLoading) {
-    return <div className="flex justify-center py-12">Loading...</div>
+    return <TBPLoader />
   }
 
   return (
@@ -100,10 +101,10 @@ export const Fields = () => {
         <h2 className="text-2xl font-bold">Fields</h2>
         <button
           onClick={handleCreate}
-          className="px-4 py-2 bg-[#05A346] text-white rounded-lg hover:bg-[#048a3a] flex items-center gap-2"
+          className="bg-[#05A346] hover:bg-[#048a3a] text-white p-2.5 rounded-lg transition-colors shadow-sm"
+          title="Create Field"
         >
-          <Plus className="h-4 w-4" />
-          Create Field
+          <Plus className="h-5 w-5" />
         </button>
       </div>
 

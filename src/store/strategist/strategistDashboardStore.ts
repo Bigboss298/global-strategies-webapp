@@ -34,6 +34,7 @@ interface Comment {
   reportId: string
   strategistId: string
   strategistName?: string
+  strategistProfilePhotoUrl?: string
   user?: User
   content: string
   createdAt: string

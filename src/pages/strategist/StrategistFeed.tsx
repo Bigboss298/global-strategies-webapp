@@ -3,6 +3,7 @@ import { strategistDashboardStore } from '../../store/strategist/strategistDashb
 import { authStore } from '../../store/authStore'
 import { CountryFlag } from '../../components/ui/CountryFlag'
 import { reactionsApi, ReactionType } from '../../api/reactions.api'
+import TBPLoader from '../../components/TBPLoader'
 
 const formatDate = (dateString: string | undefined) => {
   if (!dateString) return 'N/A'
@@ -33,6 +34,7 @@ export default function StrategistFeed() {
   const [commentText, setCommentText] = useState('')
   const [reactingReports, setReactingReports] = useState<Set<string>>(new Set())
   const [commentError, setCommentError] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState<{ url: string; alt: string } | null>(null)
 
   useEffect(() => {
     fetchFeed()
@@ -95,7 +97,7 @@ export default function StrategistFeed() {
   }
 
   if (isLoadingFeed) {
-    return <div className="flex justify-center py-12">Loading feed...</div>
+    return <TBPLoader />
   }
 
   return (
@@ -165,11 +167,16 @@ export default function StrategistFeed() {
                   <div className="px-4 pb-2">
                     <div className="flex flex-wrap gap-1.5 items-center">
                       {report.projectImageUrl && (
-                        <img
-                          src={report.projectImageUrl}
-                          alt={report.projectName || "Project"}
-                          className="w-5 h-5 rounded object-cover"
-                        />
+                        <div 
+                          className="w-16 h-6 bg-gray-100 rounded flex items-center justify-center overflow-hidden cursor-pointer hover:bg-gray-200 transition-colors"
+                          onClick={() => setSelectedImage({ url: report.projectImageUrl!, alt: report.projectName || 'Project' })}
+                        >
+                          <img
+                            src={report.projectImageUrl}
+                            alt={report.projectName || "Project"}
+                            className="max-w-full max-h-full object-contain"
+                          />
+                        </div>
                       )}
                       {report.categoryName && (
                         <span className="px-2.5 py-0.5 text-xs font-medium bg-[#183A64]/10 text-[#183A64] rounded">
@@ -224,9 +231,9 @@ export default function StrategistFeed() {
                     {(report.reactionsSummary?.like || report.reactionsSummary?.love || report.reactionsSummary?.insightful) && (
                       <div className="flex items-center gap-1">
                         <div className="flex -space-x-1">
-                          {report.reactionsSummary?.like > 0 && <span className="w-5 h-5 rounded-full bg-[#05A346] flex items-center justify-center text-[10px]">👍</span>}
-                          {report.reactionsSummary?.love > 0 && <span className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-[10px]">❤️</span>}
-                          {report.reactionsSummary?.insightful > 0 && <span className="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center text-[10px]">💡</span>}
+                          {report.reactionsSummary?.like > 0 && <span className="text-base bg-gray-100 rounded-full p-0.5 shadow-sm">👍</span>}
+                          {report.reactionsSummary?.love > 0 && <span className="text-base bg-gray-100 rounded-full p-0.5 shadow-sm">❤️</span>}
+                          {report.reactionsSummary?.insightful > 0 && <span className="text-base bg-gray-100 rounded-full p-0.5 shadow-sm">💡</span>}
                         </div>
                         <span className="ml-1">
                           {(report.reactionsSummary?.like || 0) + (report.reactionsSummary?.love || 0) + (report.reactionsSummary?.insightful || 0)}
@@ -309,19 +316,34 @@ export default function StrategistFeed() {
                           </div>
                         </div>
                       )}
-                      <textarea
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        placeholder="Write a comment..."
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#05A346] text-sm"
-                        rows={3}
-                      />
-                      <button
-                        onClick={() => handlePostComment(report.id)}
-                        className="mt-2 px-4 py-2 bg-[#05A346] text-[#FEFEFE] rounded-full hover:bg-[#048A3B] font-medium text-sm tbp-transition"
-                      >
-                        Post Comment
-                      </button>
+                      <div className="flex gap-2">
+                        {user?.profilePhotoUrl ? (
+                          <img
+                            src={user.profilePhotoUrl}
+                            alt={`${user.firstName} ${user.lastName}`}
+                            className="w-15 h-15 rounded-full object-cover flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-[#FEFEFE] font-semibold text-sm flex-shrink-0">
+                            {(user?.firstName || 'U').charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <textarea
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            placeholder="Write a comment..."
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#05A346] text-sm"
+                            rows={3}
+                          />
+                          <button
+                            onClick={() => handlePostComment(report.id)}
+                            className="mt-2 px-4 py-2 bg-[#05A346] text-[#FEFEFE] rounded-full hover:bg-[#048A3B] font-medium text-sm tbp-transition"
+                          >
+                            Post Comment
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Comments List */}
@@ -329,9 +351,17 @@ export default function StrategistFeed() {
                       {comments[report.id]?.map((comment) => (
                         <div key={comment.id} className="bg-white p-3 rounded-lg">
                           <div className="flex items-start gap-2">
-                            <div className="w-8 h-8 bg-gradient-to-br from-[#183A64] to-[#293749] rounded-full flex items-center justify-center text-sm font-semibold text-[#FEFEFE]">
-                              {(comment.strategistName || comment.user?.firstName || 'U').charAt(0).toUpperCase()}
-                            </div>
+                            {comment.strategistProfilePhotoUrl ? (
+                              <img
+                                src={comment.strategistProfilePhotoUrl}
+                                alt={comment.strategistName || 'User'}
+                                className="w-16 h-16 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-8 h-8 bg-gradient-to-br from-[#183A64] to-[#293749] rounded-full flex items-center justify-center text-sm font-semibold text-[#FEFEFE]">
+                                {(comment.strategistName || comment.user?.firstName || 'U').charAt(0).toUpperCase()}
+                              </div>
+                            )}
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-sm text-[#293749]">
                                 {comment.strategistName || (comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Unknown User')}
@@ -391,6 +421,24 @@ export default function StrategistFeed() {
           </div>
         </aside>
       </div>
+
+      {/* Image Modal */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] flex items-center justify-center">
+            <img
+              src={selectedImage.url}
+              alt={selectedImage.alt}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+            
+          </div>
+        </div>
+      )}
     </div>
   )
 }

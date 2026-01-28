@@ -9,8 +9,8 @@ import { Select } from '../../components/ui/Select'
 import { Label } from '../../components/ui/Label'
 import { Modal } from '../../components/ui/Modal'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card'
-import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
-import { Plus, Edit, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
+import TBPLoader from '../../components/TBPLoader'
+import { Plus, Edit, Trash2, ChevronDown, ChevronUp, Filter } from 'lucide-react'
 
 export const Projects = () => {
   const { categories, isLoading, fetchCategories, createProject, updateProject, deleteProject } = adminDashboardStore()
@@ -18,7 +18,15 @@ export const Projects = () => {
   const [expandedProjects, setExpandedProjects] = useState<Set<string>>(new Set())
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
-  const [formData, setFormData] = useState({ name: '', description: '', categoryId: '', imageUrl: '' })
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [formData, setFormData] = useState<{ name: string; description: string; categoryId: string; image?: File }>({
+    name: '', 
+    description: '', 
+    categoryId: '', 
+    image: undefined
+  })
 
   useEffect(() => {
     fetchProjectsWithFields()
@@ -48,7 +56,7 @@ export const Projects = () => {
 
   const handleCreate = () => {
     setEditingProject(null)
-    setFormData({ name: '', description: '', categoryId: '', imageUrl: '' })
+    setFormData({ name: '', description: '', categoryId: '', image: undefined })
     setIsModalOpen(true)
   }
 
@@ -58,7 +66,7 @@ export const Projects = () => {
       name: project.name,
       description: project.description || '',
       categoryId: project.categoryId,
-      imageUrl: project.imageUrl || '',
+      image: undefined,
     })
     setIsModalOpen(true)
   }
@@ -88,23 +96,102 @@ export const Projects = () => {
     }
   }
 
+  // Filter projects based on search query and selected category
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch = searchQuery
+      ? project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        project.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      : true
+    const matchesCategory = selectedCategory ? project.categoryId === selectedCategory : true
+    return matchesSearch && matchesCategory
+  })
+
+  const handleClearFilters = () => {
+    setSelectedCategory('')
+    setSearchQuery('')
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Projects</h1>
-        <Button onClick={handleCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Project
-        </Button>
+        <button 
+          onClick={handleCreate}
+          className="bg-[#05A346] hover:bg-[#048a3a] text-white p-2.5 rounded-lg transition-colors shadow-sm"
+          title="Create Project"
+        >
+          <Plus className="h-5 w-5" />
+        </button>
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="lg" />
+      {/* Collapsible Filter Section */}
+      <Card className="mb-6 bg-white shadow-sm">
+        <div className="p-4">
+          <button
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
+            className="flex items-center justify-between w-full text-left hover:bg-gray-50 -mx-2 px-2 py-1.5 rounded transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Filter className="h-5 w-5 text-[#05A346]" />
+              <span className="text-lg font-semibold text-gray-900">Filters</span>
+              {(selectedCategory || searchQuery) && (
+                <span className="text-xs bg-[#05A346] text-white px-2 py-0.5 rounded-full">
+                  Active
+                </span>
+              )}
+            </div>
+            {isFilterOpen ? (
+              <ChevronUp className="h-5 w-5 text-gray-500" />
+            ) : (
+              <ChevronDown className="h-5 w-5 text-gray-500" />
+            )}
+          </button>
+
+          {isFilterOpen && (
+            <div className="mt-4 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="search">Search Projects</Label>
+                  <Input
+                    id="search"
+                    placeholder="Search by name or description..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="categoryFilter">Category</Label>
+                  <Select
+                    id="categoryFilter"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  >
+                    <option value="">All Categories</option>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+              </div>
+              {(selectedCategory || searchQuery) && (
+                <div className="flex justify-end">
+                  <Button variant="outline" size="sm" onClick={handleClearFilters}>
+                    Clear Filters
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+      </Card>
+
+      {isLoading ? (
+        <TBPLoader />
       ) : (
         <div className="space-y-4">
-          {projects.map((project) => {
+          {filteredProjects.map((project) => {
             const isExpanded = expandedProjects.has(project.id)
             const fieldsCount = project.fields?.length || 0
 
@@ -121,13 +208,13 @@ export const Projects = () => {
                         <p className="text-sm text-gray-600">{project.description}</p>
                       )}
                     </div>
-                    <div className="flex gap-2 ml-4">
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(project)} title="Edit">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button variant="danger" size="sm" onClick={() => handleDelete(project.id)} title="Delete">
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <div className="flex gap-3 ml-4">
+                      <button onClick={() => handleEdit(project)} title="Edit" className="text-gray-600 hover:text-[#05A346] transition-colors">
+                        <Edit className="h-5 w-5" />
+                      </button>
+                      <button onClick={() => handleDelete(project.id)} title="Delete" className="text-gray-600 hover:text-red-600 transition-colors">
+                        <Trash2 className="h-5 w-5" />
+                      </button>
                     </div>
                   </div>
                 </CardHeader>
@@ -181,9 +268,13 @@ export const Projects = () => {
             )
           })}
 
-          {projects.length === 0 && (
+          {filteredProjects.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">No projects found. Create your first project to get started.</p>
+              <p className="text-gray-500">
+                {projects.length === 0 
+                  ? 'No projects found. Create your first project to get started.'
+                  : 'No projects match your filters. Try adjusting your search criteria.'}
+              </p>
             </div>
           )}
         </div>
@@ -229,14 +320,19 @@ export const Projects = () => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">Image URL</Label>
+            <Label htmlFor="image">Project Image (JPG, PNG - Max 5MB)</Label>
             <Input
-              id="imageUrl"
-              type="url"
-              value={formData.imageUrl}
-              onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-              placeholder="https://example.com/image.jpg"
+              id="image"
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              onChange={(e) => setFormData({ ...formData, image: e.target.files?.[0] })}
             />
+            {formData.image && (
+              <p className="text-xs text-green-600 mt-1">Selected: {formData.image.name}</p>
+            )}
+            {editingProject?.imageUrl && (
+              <p className="text-xs text-gray-500">Current image will be replaced if new file is selected</p>
+            )}
           </div>
           <div className="flex gap-2 justify-end">
             <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>

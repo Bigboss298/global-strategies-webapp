@@ -98,8 +98,8 @@ interface AdminDashboardState {
   fetchProjects: (params?: { pageNumber?: number; pageSize?: number }) => Promise<void>
   fetchProjectById: (id: string) => Promise<void>
   fetchProjectsByCategory: (categoryId: string) => Promise<void>
-  createProject: (data: { name: string; description?: string; categoryId: string; imageUrl?: string }) => Promise<void>
-  updateProject: (id: string, data: { name: string; description?: string; categoryId: string; imageUrl?: string }) => Promise<void>
+  createProject: (data: { name: string; description?: string; categoryId: string; image?: File }) => Promise<void>
+  updateProject: (id: string, data: { name: string; description?: string; categoryId: string; image?: File }) => Promise<void>
   deleteProject: (id: string) => Promise<void>
   
   // Actions - Fields
@@ -326,7 +326,8 @@ export const adminDashboardStore = create<AdminDashboardState>((set) => ({
   createProject: async (data) => {
     set({ isLoading: true, error: null })
     try {
-      await axiosInstance.post('/project', data)
+      const { adminApi } = await import('../../api/admin.api')
+      await adminApi.createProject(data)
       set({ isLoading: false })
       adminDashboardStore.getState().fetchProjects()
     } catch (error: any) {
@@ -341,7 +342,8 @@ export const adminDashboardStore = create<AdminDashboardState>((set) => ({
   updateProject: async (id, data) => {
     set({ isLoading: true, error: null })
     try {
-      await axiosInstance.put(`/project/${id}`, data)
+      const { adminApi } = await import('../../api/admin.api')
+      await adminApi.updateProject(id, data)
       set({ isLoading: false })
       adminDashboardStore.getState().fetchProjects()
     } catch (error: any) {

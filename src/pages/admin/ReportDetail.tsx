@@ -4,6 +4,7 @@ import { adminApi } from '../../api/admin.api'
 import { reactionsApi } from '../../api/reactions.api'
 import { authStore } from '../../store/authStore'
 import { ArrowLeft, Heart, ThumbsUp, ThumbsDown, MessageCircle, Trash2 } from 'lucide-react'
+import TBPLoader from '../../components/TBPLoader'
 
 export const ReportDetail = () => {
   const { id } = useParams<{ id: string }>()
@@ -128,7 +129,7 @@ export const ReportDetail = () => {
   }
 
   if (isLoading) {
-    return <div className="flex justify-center py-12">Loading report...</div>
+    return <TBPLoader />
   }
 
   if (!report) {

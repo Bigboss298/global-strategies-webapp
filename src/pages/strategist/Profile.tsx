@@ -5,6 +5,7 @@ import { strategistDashboardStore } from '../../store/strategist/strategistDashb
 import ProfileEdit from './ProfileEdit'
 import PDFViewerModal from '../../components/PDFViewerModal'
 import { downloadFile } from '../../utils/fileHelpers'
+import TBPLoader from '../../components/TBPLoader'
 import { 
   MapPin, 
   Briefcase, 
@@ -92,11 +93,7 @@ export default function Profile() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="text-gray-600">Loading profile...</div>
-      </div>
-    )
+    return <TBPLoader />
   }
 
   if (!profile) {
@@ -118,9 +115,18 @@ export default function Profile() {
 
       <div className="max-w-6xl mx-auto">
         {/* Profile Header */}
-        <div className="bg-white rounded-lg shadow-md p-8 mb-6">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-start gap-6">
+        <div className="bg-white rounded-lg shadow-md p-8 mb-6 relative">
+          {/* Edit Button - Top Right Corner */}
+          <button
+            onClick={() => setIsEditing(true)}
+            className="absolute top-4 right-4 p-2 md:bg-blue-600 text-blue-600 md:text-white rounded-lg md:hover:bg-blue-700 transition-colors"
+            title="Edit Profile"
+          >
+            <Edit3 className="w-6 h-6 md:w-5 md:h-5 stroke-[2.5]" />
+          </button>
+
+          <div className="flex flex-col md:flex-row md:items-start mb-6">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 flex-1">
               {/* Profile Photo */}
               <div className="flex-shrink-0">
                 {profile.profilePhotoUrl ? (
@@ -137,48 +143,39 @@ export default function Profile() {
               </div>
 
               {/* Profile Info */}
-              <div className="flex-1">
+              <div className="flex-1 text-center md:text-left w-full">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   {profile.firstName} {profile.lastName}
                 </h1>
                 
                 {profile.headline && (
-                  <p className="text-xl text-gray-600 mb-3">{profile.headline}</p>
+                  <p className="text-xl text-gray-600 mb-4">{profile.headline}</p>
                 )}
 
-                <div className="flex flex-wrap gap-4 text-gray-600">
+                <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 md:gap-4 text-gray-600 text-left">
                   {profile.country && (
                     <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{profile.country}</span>
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-sm">{profile.country}</span>
                     </div>
                   )}
                   
                   {profile.title && (
                     <div className="flex items-center gap-2">
-                      <Briefcase className="w-4 h-4" />
-                      <span>{profile.title}</span>
+                      <Briefcase className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-sm">{profile.title}</span>
                     </div>
                   )}
                   
                   {profile.certification && (
                     <div className="flex items-center gap-2">
-                      <Award className="w-4 h-4" />
-                      <span>{profile.certification}</span>
+                      <Award className="w-4 h-4 flex-shrink-0" />
+                      <span className="text-sm">{profile.certification}</span>
                     </div>
                   )}
                 </div>
               </div>
             </div>
-
-            {/* Edit Button - Only show for own profile */}
-            <button
-              onClick={() => setIsEditing(true)}
-              className="flex items-center justify-center p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              title="Edit Profile"
-            >
-              <Edit3 className="w-5 h-5" />
-            </button>
           </div>
 
           {/* Bio Section */}
@@ -192,17 +189,17 @@ export default function Profile() {
           {/* CV Download */}
           {profile.cvFileUrl && (
             <div className="border-t pt-6 mt-6">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   onClick={() => setIsPDFModalOpen(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                 >
                   <Eye className="w-4 h-4" />
                   View CV/Resume
                 </button>
                 <button
                   onClick={() => downloadFile(profile.cvFileUrl!, `${profile.firstName}_${profile.lastName}_CV.pdf`)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
                 >
                   <Download className="w-4 h-4" />
                   Download CV/Resume
@@ -217,7 +214,7 @@ export default function Profile() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Reports & Insights</h2>
           
           {isLoadingMyReports ? (
-            <div className="text-center py-8 text-gray-600">Loading reports...</div>
+            <TBPLoader />
           ) : myReports.length === 0 ? (
             <div className="text-center py-8 text-gray-500">No reports published yet</div>
           ) : (

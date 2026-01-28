@@ -140,9 +140,24 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     <Menu className="h-6 w-6 text-[#293749]" />
                   )}
                 </button>
-                <h1 className="text-xl sm:text-2xl font-bold text-[#293749]">
-                  {navItems.find(item => location.pathname.startsWith(item.path))?.label || 'Dashboard'}
-                </h1>
+                {/* Logo for mobile, text for desktop */}
+                <div className="flex items-center">
+                  <img 
+                    src={tbpLogo} 
+                    alt="TBP" 
+                    className="h-8 w-auto object-contain lg:hidden" 
+                  />
+                  <h1 className="hidden lg:block text-xl sm:text-2xl font-bold text-[#293749]">
+                    {navItems.find(item => location.pathname.startsWith(item.path))?.label || 'Dashboard'}
+                  </h1>
+                </div>
+              </div>
+              
+              {/* Role Badge */}
+              <div className="flex items-center gap-3">
+                <div className="bg-[#05A346] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm">
+                  Admin
+                </div>
               </div>
             </div>
           </div>

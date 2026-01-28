@@ -4,6 +4,7 @@ import { userApi } from '../../api/user.api'
 import type { UpdateUserProfileData } from '../../api/user.api'
 import PDFViewerModal from '../../components/PDFViewerModal'
 import { downloadFile } from '../../utils/fileHelpers'
+import TBPLoader from '../../components/TBPLoader'
 import { User, Save, AlertCircle, CheckCircle, X, Eye, Download } from 'lucide-react'
 
 interface ProfileEditProps {
@@ -130,7 +131,7 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-6">
-          <div className="text-gray-600">Loading profile data...</div>
+          <TBPLoader />
         </div>
       </div>
     )

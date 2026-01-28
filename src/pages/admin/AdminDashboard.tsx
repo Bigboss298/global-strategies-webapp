@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
+import tbpLogo from '../../assets/TBP_logo.jpeg'
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview')
@@ -19,12 +20,18 @@ export default function AdminDashboard() {
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-4">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Administrator Dashboard
-            </h1>
-            <p className="text-sm text-gray-600">
-              Manage organizations, users, and system configuration
-            </p>
+            {/* Show logo on mobile, full dashboard title on desktop */}
+            <div className="md:hidden">
+              <img src={tbpLogo} alt="TBP" className="h-10 w-auto object-contain" />
+            </div>
+            <div className="hidden md:block">
+              <h1 className="text-2xl font-bold text-gray-900">
+                Administrator Dashboard
+              </h1>
+              <p className="text-sm text-gray-600">
+                Manage organizations, users, and system configuration
+              </p>
+            </div>
           </div>
         </div>
       </div>

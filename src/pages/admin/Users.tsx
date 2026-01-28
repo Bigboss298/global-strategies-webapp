@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
 import type { User } from '../../types'
-import { Search, ArrowUpDown, Edit, Trash2 } from 'lucide-react'
+import TBPLoader from '../../components/TBPLoader'
+import { Search, ArrowUpDown, Edit, Trash2, Plus } from 'lucide-react'
 import { CountryFlag } from '../../components/ui/CountryFlag'
 
 export default function Users() {
@@ -123,7 +124,7 @@ export default function Users() {
   }
 
   if (isLoading) {
-    return <div className="flex justify-center py-12">Loading...</div>
+    return <TBPLoader />
   }
 
   return (
@@ -132,9 +133,10 @@ export default function Users() {
         <h2 className="text-2xl font-bold">Users</h2>
         <button
           onClick={handleCreate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="bg-[#05A346] hover:bg-[#048a3a] text-white p-2.5 rounded-lg transition-colors shadow-sm"
+          title="Add User"
         >
-          Add User
+          <Plus className="h-5 w-5" />
         </button>
       </div>
 

@@ -6,7 +6,7 @@ import { Input } from '../../components/ui/Input'
 import { Textarea } from '../../components/ui/Textarea'
 import { Label } from '../../components/ui/Label'
 import { Modal } from '../../components/ui/Modal'
-import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
+import TBPLoader from '../../components/TBPLoader'
 import { Plus, Edit, Trash2, Search, ArrowUpDown } from 'lucide-react'
 
 export const Categories = () => {
@@ -94,10 +94,13 @@ export const Categories = () => {
           <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
           <p className="text-sm text-gray-600 mt-1">Manage content categories</p>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Category
-        </Button>
+        <button 
+          onClick={handleCreate}
+          className="bg-[#05A346] hover:bg-[#048a3a] text-white p-2.5 rounded-lg transition-colors shadow-sm"
+          title="Create Category"
+        >
+          <Plus className="h-5 w-5" />
+        </button>
       </div>
 
       <div className="mb-6">
@@ -114,9 +117,7 @@ export const Categories = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="lg" />
-        </div>
+        <TBPLoader />
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">

@@ -10,7 +10,7 @@ export interface CreateProjectData {
   name: string
   description?: string
   categoryId: string
-  imageUrl?: string
+  image?: File
 }
 
 export interface CreateFieldData {
@@ -84,17 +84,37 @@ export const adminApi = {
   },
 
   createProject: async (data: CreateProjectData): Promise<Project> => {
-    const response = await axiosInstance.post<Project>('/admin/projects', data)
+    const formData = new FormData()
+    formData.append('name', data.name)
+    formData.append('categoryId', data.categoryId)
+    if (data.description) formData.append('description', data.description)
+    if (data.image) formData.append('image', data.image)
+    
+    const response = await axiosInstance.post<Project>('/project', formData, {
+      headers: {
+        'Content-Type': undefined, // Let browser set multipart/form-data with boundary
+      },
+    })
     return response.data
   },
 
   updateProject: async (id: string, data: Partial<CreateProjectData>): Promise<Project> => {
-    const response = await axiosInstance.put<Project>(`/admin/projects/${id}`, data)
+    const formData = new FormData()
+    if (data.name) formData.append('name', data.name)
+    if (data.categoryId) formData.append('categoryId', data.categoryId)
+    if (data.description) formData.append('description', data.description)
+    if (data.image) formData.append('image', data.image)
+    
+    const response = await axiosInstance.put<Project>(`/project/${id}`, formData, {
+      headers: {
+        'Content-Type': undefined, // Let browser set multipart/form-data with boundary
+      },
+    })
     return response.data
   },
 
   deleteProject: async (id: string): Promise<void> => {
-    await axiosInstance.delete(`/admin/projects/${id}`)
+    await axiosInstance.delete(`/project/${id}`)
   },
 
   // Fields

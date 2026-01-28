@@ -68,7 +68,7 @@ export default function OrganizationDashboard() {
                 <p className="text-[#FEFEFE] text-sm font-semibold truncate">
                   {user?.firstName} {user?.lastName}
                 </p>
-                <p className="text-[#FEFEFE]/60 text-xs">Organization Admin</p>
+                <span className="inline-block px-2 py-0.5 bg-[#FEFEFE]/20 text-[#FEFEFE] text-xs font-medium rounded-full">Organization Admin</span>
               </div>
             </div>
             <button

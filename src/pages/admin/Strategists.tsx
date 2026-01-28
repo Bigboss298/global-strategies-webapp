@@ -6,7 +6,7 @@ import { Input } from '../../components/ui/Input'
 import { Select } from '../../components/ui/Select'
 import { Pagination } from '../../components/ui/Pagination'
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card'
-import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
+import TBPLoader from '../../components/TBPLoader'
 import { CheckCircle, Ban } from 'lucide-react'
 
 export const AdminStrategists = () => {
@@ -116,9 +116,7 @@ export const AdminStrategists = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <LoadingSpinner size="lg" />
-        </div>
+        <TBPLoader />
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">

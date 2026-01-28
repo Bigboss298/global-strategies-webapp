@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
+import TBPLoader from '../../components/TBPLoader'
 
 export default function AdminOverview() {
   const {
@@ -59,9 +60,7 @@ export default function AdminOverview() {
       )}
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <div className="text-gray-600">Loading...</div>
-        </div>
+        <TBPLoader />
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
