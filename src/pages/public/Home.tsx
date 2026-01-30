@@ -1,3 +1,4 @@
+import { StrategistBadge } from '../../components/StrategistBadge'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
@@ -241,10 +242,13 @@ export const Home = () => {
                       </div>
                     </div>
 
-                    {/* Name and Country */}
+                    {/* Name and Badge */}
                     <div className="text-center px-4 pb-5">
                       {strategist.fullName && (
-                        <h3 className="text-base font-semibold text-gray-900 mb-2">{strategist.fullName}</h3>
+                        <h3 className="text-base font-semibold text-gray-900 mb-2 flex items-center gap-2 justify-center">
+                          {strategist.fullName}
+                          <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
+                        </h3>
                       )}
                       {(strategist.countryName || strategist.country) && (
                         <div className="flex justify-center items-center">

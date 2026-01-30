@@ -3,6 +3,7 @@ import { authStore } from '../../store/authStore'
 import { userApi } from '../../api/user.api'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import ProfileEdit from './ProfileEdit'
+import { StrategistBadge } from '../../components/StrategistBadge'
 import PDFViewerModal from '../../components/PDFViewerModal'
 import { downloadFile } from '../../utils/fileHelpers'
 import TBPLoader from '../../components/TBPLoader'
@@ -33,6 +34,9 @@ interface UserProfile {
   title?: string
   shortBio?: string
   cvFileUrl?: string
+  badgeType?: number
+  isVerified?: boolean
+  verificationNote?: string
 }
 
 export default function Profile() {
@@ -104,6 +108,16 @@ export default function Profile() {
     )
   }
 
+  // Badge type mapping
+  // Badge color mapping (per user spec)
+  const BADGE_COLOR_MAP: Record<number, string> = {
+    0: '#9CA3AF',      // None: gray-400
+    1: '#2563EB',      // Verified: blue-600
+    2: '#16A34A',      // Expert: green-600
+    3: '#F59E0B',      // Premium: amber-500
+    4: '#6D28D9',      // Corporate: violet-700 (modern)
+  };
+
   return (
     <>
       {isEditing && (
@@ -127,8 +141,8 @@ export default function Profile() {
 
           <div className="flex flex-col md:flex-row md:items-start mb-6">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6 flex-1">
-              {/* Profile Photo */}
-              <div className="flex-shrink-0">
+              {/* Profile Photo with Badge Overlay */}
+              <div className="flex-shrink-0 relative">
                 {profile.profilePhotoUrl ? (
                   <img
                     src={profile.profilePhotoUrl}
@@ -140,14 +154,38 @@ export default function Profile() {
                     {profile.firstName[0]}{profile.lastName[0]}
                   </div>
                 )}
+                {/* Badge Overlay: LinkedIn-style square with 'T' */}
+                {profile.badgeType !== undefined && (
+                  <span
+                    className="absolute bottom-2 right-2 w-7 h-7 flex items-center justify-center rounded-md shadow-lg border border-white text-white font-bold text-base select-none"
+                    style={{ background: BADGE_COLOR_MAP[profile.badgeType] || '#9CA3AF' }}
+                    title="Strategist Badge"
+                  >
+                    T
+                  </span>
+                )}
               </div>
 
               {/* Profile Info */}
               <div className="flex-1 text-center md:text-left w-full">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-2">
                   {profile.firstName} {profile.lastName}
+                  <StrategistBadge badgeType={profile.badgeType} withDot={true} />
                 </h1>
-                
+
+                {/* Show badge name below name on profile page */}
+                {profile.badgeType !== undefined && profile.badgeType !== 0 && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <StrategistBadge badgeType={profile.badgeType} withDot={true} />
+                    <span className="text-sm font-medium text-gray-700">{
+                      profile.badgeType === 1 ? 'Verified' :
+                      profile.badgeType === 2 ? 'Expert' :
+                      profile.badgeType === 3 ? 'Premium' :
+                      profile.badgeType === 4 ? 'Corporate' : 'None'
+                    }</span>
+                  </div>
+                )}
+
                 {profile.headline && (
                   <p className="text-xl text-gray-600 mb-4">{profile.headline}</p>
                 )}

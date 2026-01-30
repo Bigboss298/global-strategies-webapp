@@ -1,3 +1,4 @@
+import { StrategistBadge } from '../../components/StrategistBadge'
 import { useState, useEffect } from 'react'
 import { adminApi } from '../../api'
 import type { Strategist } from '../../types'
@@ -138,7 +139,10 @@ export const AdminStrategists = () => {
                       )}
                     </div>
                     <div>
-                      <CardTitle className="text-lg">{strategist.name}</CardTitle>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        {strategist.name}
+                        <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
+                      </CardTitle>
                       <p className="text-sm text-gray-500">{strategist.email}</p>
                     </div>
                   </div>

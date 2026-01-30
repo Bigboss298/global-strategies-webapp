@@ -1,3 +1,4 @@
+import { StrategistBadge } from '../../components/StrategistBadge'
 import { useEffect, useState } from 'react'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import { authStore } from '../../store/authStore'
@@ -137,8 +138,10 @@ export default function MyReports() {
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
                   {report.title}
+                  {/* Show badge after name (user is always the author) */}
+                  <StrategistBadge badgeType={user?.badgeType} withDot={true} />
                 </h3>
                 <p className="text-gray-700 mb-4">{report.content}</p>
 

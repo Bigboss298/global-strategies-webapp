@@ -86,6 +86,10 @@ interface AdminDashboardState {
   // Actions - Users
   fetchUsers: (params?: { pageNumber?: number; pageSize?: number }) => Promise<void>
   fetchTotalStrategists: () => Promise<void>
+
+  // Badge Management
+  fetchUsersForBadgeManagement: (params?: { pageNumber?: number; pageSize?: number }) => Promise<void>
+  updateUserBadge: (userId: string, data: { isVerified: boolean; badgeType: number; verificationNote?: string }) => Promise<void>
   
   // Actions - Categories
   fetchCategories: () => Promise<void>
@@ -114,7 +118,45 @@ interface AdminDashboardState {
   clearError: () => void
 }
 
-export const adminDashboardStore = create<AdminDashboardState>((set) => ({
+export const adminDashboardStore = create<AdminDashboardState>((set, get) => ({
+    // Badge Management
+    fetchUsersForBadgeManagement: async (params = { pageNumber: 1, pageSize: 50 }) => {
+      set({ isLoading: true, error: null })
+      try {
+        const response = await axiosInstance.get<PagedResult<User>>('/User/admin/badge-management', {
+          params: {
+            PageNumber: params.pageNumber || 1,
+            PageSize: params.pageSize || 50,
+          },
+        })
+        set({
+          users: response.data.items,
+          usersPagination: response.data,
+          isLoading: false,
+        })
+      } catch (error: any) {
+        set({
+          isLoading: false,
+          error: error.response?.data?.message || 'Failed to fetch users for badge management',
+        })
+      }
+    },
+
+    updateUserBadge: async (userId, data) => {
+      set({ isLoading: true, error: null })
+      try {
+        await axiosInstance.put(`/User/${userId}/badge`, data)
+        // Refresh users after update
+        await get().fetchUsersForBadgeManagement()
+        set({ isLoading: false })
+      } catch (error: any) {
+        set({
+          isLoading: false,
+          error: error.response?.data?.message || 'Failed to update user badge',
+        })
+        throw error
+      }
+    },
   // Initial State
   organizations: [],
   organizationsPagination: null,

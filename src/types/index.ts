@@ -15,13 +15,18 @@ export interface User {
   isActive: boolean
   role: number // 1=Admin, 2=Strategist, 3=CorporateAdmin, 4=CorporateTeam
   corporateAccountId?: string
-  
+
   // Strategist-specific fields
   title?: string
   shortBio?: string
   certification?: string
   cvFileUrl?: string
-  
+
+  // Badge management fields
+  badgeType: number;
+  isVerified: boolean;
+  verificationNote?: string;
+
   dateCreated: string
   dateUpdated?: string
 }
@@ -84,6 +89,7 @@ export interface Strategist {
   bio?: string
   status: 'pending' | 'active' | 'suspended'
   createdAt: string
+  badgeType?: number // Add badgeType for badge display
 }
 
 // Category, Project, Field Types
@@ -199,11 +205,14 @@ export interface Reaction {
 export interface Comment {
   id: string
   reportId: string
-  userId: string
-  user: Strategist
+  strategistId: string
+  strategistName?: string
+  strategistProfilePhotoUrl?: string
+  badgeType?: number
+  user?: Strategist
   content: string
   createdAt: string
-  updatedAt: string
+  updatedAt?: string
 }
 
 // API Response Types

@@ -24,6 +24,7 @@ import { Projects } from './pages/admin/Projects'
 import { Fields } from './pages/admin/Fields'
 import { Reports } from './pages/admin/Reports'
 import { ReportDetail } from './pages/admin/ReportDetail'
+import { BadgeManagement } from './pages/admin/BadgeManagement'
 
 // Organization Pages
 import OrganizationDashboard from './pages/organization/OrganizationDashboard'
@@ -71,6 +72,7 @@ export const router = createBrowserRouter([
       { path: 'fields', element: <Fields /> },
       { path: 'organizations', element: <Organizations /> },
       { path: 'users', element: <Users /> },
+      { path: 'badges', element: <BadgeManagement /> },
     ],
   },
   {

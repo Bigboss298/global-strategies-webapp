@@ -1,3 +1,4 @@
+import { StrategistBadge } from '../../components/StrategistBadge'
 import { useEffect, useState, useMemo } from 'react'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
 import type { User } from '../../types'
@@ -228,8 +229,9 @@ export default function Users() {
                 filteredAndSortedUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
                         {user.firstName} {user.lastName}
+                        <StrategistBadge badgeType={user.badgeType} withDot={true} />
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

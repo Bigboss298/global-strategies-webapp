@@ -1,3 +1,4 @@
+import { StrategistBadge } from '../../components/StrategistBadge'
 import { useEffect, useState } from 'react'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import { authStore } from '../../store/authStore'
@@ -140,8 +141,9 @@ export default function StrategistFeed() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-[#293749] text-sm hover:text-[#05A346] cursor-pointer">
+                      <p className="font-semibold text-[#293749] text-sm hover:text-[#05A346] cursor-pointer flex items-center gap-2">
                         {report.strategistFirstName} {report.strategistLastName}
+                        <StrategistBadge badgeType={report.badgeType ?? 0} withDot={true} />
                       </p>
                       <div className="flex items-center gap-1 text-xs text-[#293749]/60">
                         {report.strategistCountry && (
@@ -321,7 +323,7 @@ export default function StrategistFeed() {
                           <img
                             src={user.profilePhotoUrl}
                             alt={`${user.firstName} ${user.lastName}`}
-                            className="w-15 h-15 rounded-full object-cover flex-shrink-0"
+                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                           />
                         ) : (
                           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-[#FEFEFE] font-semibold text-sm flex-shrink-0">
@@ -333,8 +335,8 @@ export default function StrategistFeed() {
                             value={commentText}
                             onChange={(e) => setCommentText(e.target.value)}
                             placeholder="Write a comment..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#05A346] text-sm"
-                            rows={3}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-[#05A346] text-sm"
+                            rows={1}
                           />
                           <button
                             onClick={() => handlePostComment(report.id)}
@@ -363,8 +365,9 @@ export default function StrategistFeed() {
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm text-[#293749]">
+                              <p className="font-semibold text-sm text-[#293749] flex items-center gap-1">
                                 {comment.strategistName || (comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Unknown User')}
+                                <StrategistBadge badgeType={comment.badgeType ?? 0} withDot={true} />
                               </p>
                               <p className="text-[#293749]/90 text-sm mt-1">{comment.content}</p>
                               <p className="text-xs text-[#293749]/60 mt-1">

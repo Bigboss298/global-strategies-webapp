@@ -1,3 +1,4 @@
+import { StrategistBadge } from '../../components/StrategistBadge'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { adminApi } from '../../api/admin.api'
@@ -309,7 +310,10 @@ export const Reports = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {report.strategistFirstName} {report.strategistLastName}
+                      <span className="flex items-center gap-2">
+                        {report.strategistFirstName} {report.strategistLastName}
+                        <StrategistBadge badgeType={report.strategistBadgeType} withDot={true} />
+                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">

@@ -12,7 +12,8 @@ import {
   Rss,
   FileText,
   Menu,
-  X
+  X,
+  Award
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
@@ -63,6 +64,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: '/admin/projects', label: 'Projects', icon: FolderKanban },
     { path: '/admin/fields', label: 'Fields', icon: Tag },
     { path: '/admin/users', label: 'Users', icon: Users },
+    { path: '/admin/badges', label: 'Badges', icon: Award },
   ]
 
   return (

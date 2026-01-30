@@ -12,6 +12,7 @@ interface ReportFeed {
   strategistLastName: string
   strategistCountry: string
   strategistProfilePhotoUrl?: string
+  badgeType?: number // <-- Add badgeType for badge display
   categoryName?: string
   projectName?: string
   fieldName?: string
@@ -35,6 +36,7 @@ interface Comment {
   strategistId: string
   strategistName?: string
   strategistProfilePhotoUrl?: string
+  badgeType?: number
   user?: User
   content: string
   createdAt: string

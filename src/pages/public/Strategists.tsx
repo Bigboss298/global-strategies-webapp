@@ -7,6 +7,7 @@ import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
 import { Search, Grid3x3 } from 'lucide-react'
 import { CountryFlag } from '../../components/ui/CountryFlag'
+import { StrategistBadge } from '../../components/StrategistBadge'
 
 export const Strategists = () => {
   const { strategists, pagination, isLoading, fetchStrategists, setSearchQuery } = strategistStore()
@@ -113,10 +114,11 @@ export const Strategists = () => {
                     </div>
                   </div>
 
-                  {/* Name */}
+                  {/* Name and Badge */}
                   <div className="text-center px-4 pb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2 justify-center">
                       {strategist.fullName || `${strategist.firstName} ${strategist.lastName}` || 'Unknown'}
+                      <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
                     </h3>
                     {strategist.country && (
                       <div className="flex justify-center items-center">
