@@ -95,9 +95,9 @@ export const Strategists = () => {
                     </div>
                   </div>
 
-                  {/* Profile Image */}
-                  <div className="flex justify-center -mt-12 mb-4">
-                    <div className="h-24 w-24 rounded-full bg-gray-200 border-4 border-white overflow-hidden">
+                  {/* Profile Image - absolute overlap */}
+                  <div className="relative flex justify-center mb-4" style={{ height: '48px' }}>
+                    <div className="absolute left-1/2 -translate-x-1/2 -top-12 h-24 w-24 rounded-full bg-gray-200 border-4 border-white overflow-hidden shadow-md">
                       {strategist.profilePhotoUrl ? (
                         <img
                           src={strategist.profilePhotoUrl}
