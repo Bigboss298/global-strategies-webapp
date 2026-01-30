@@ -37,7 +37,7 @@ export const StrategistBadge: React.FC<StrategistBadgeProps> = ({ badgeType = 0,
         className="w-5 h-5 flex items-center justify-center rounded-md font-bold text-xs text-white select-none mr-1"
         style={{ background: color }}
       >
-        T
+        S
       </span>
       {showLabel && (
         <span className="ml-1 text-xs font-medium text-gray-700 align-middle">{label}</span>
