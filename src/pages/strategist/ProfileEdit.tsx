@@ -326,7 +326,7 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    CV/Resume (PDF only - Max 5MB)
+                    CV/Resume (PDF only - Max 1MB)
                   </label>
                   {currentCvUrl && (
                     <div className="mb-3 flex items-center gap-2">
@@ -351,11 +351,22 @@ export default function ProfileEdit({ onClose, onSave }: ProfileEditProps) {
                   <input
                     type="file"
                     accept=".pdf"
-                    onChange={(e) => setFormData({ ...formData, cvFile: e.target.files?.[0] })}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        const maxSize = 1 * 1024 * 1024 // 1MB in bytes
+                        if (file.size > maxSize) {
+                          alert('File size exceeds 1MB limit. Please choose a smaller file.')
+                          e.target.value = '' // Clear the input
+                          return
+                        }
+                      }
+                      setFormData({ ...formData, cvFile: file })
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   {formData.cvFile && (
-                    <p className="text-xs text-green-600 mt-1">New file selected: {formData.cvFile.name}</p>
+                    <p className="text-xs text-green-600 mt-1">New file selected: {formData.cvFile.name} ({(formData.cvFile.size / (1024 * 1024)).toFixed(2)} MB)</p>
                   )}
                 </div>
               </div>

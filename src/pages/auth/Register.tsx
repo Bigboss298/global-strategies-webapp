@@ -320,15 +320,26 @@ export const Register = () => {
               </div>
 
               <div className="space-y-1 sm:space-y-2">
-                <Label htmlFor="cvFile">CV/Resume (Optional - PDF only)</Label>
+                <Label htmlFor="cvFile">CV/Resume (Optional - PDF only, Max 1MB)</Label>
                 <Input
                   id="cvFile"
                   type="file"
                   accept=".pdf"
-                  onChange={(e) => setIndividualForm({ ...individualForm, cvFile: e.target.files?.[0] })}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      const maxSize = 1 * 1024 * 1024 // 1MB in bytes
+                      if (file.size > maxSize) {
+                        alert('File size exceeds 1MB limit. Please choose a smaller file.')
+                        e.target.value = '' // Clear the input
+                        return
+                      }
+                    }
+                    setIndividualForm({ ...individualForm, cvFile: file })
+                  }}
                 />
                 {individualForm.cvFile && (
-                  <p className="text-xs sm:text-sm text-[#293749]/70 mt-1">Selected: {individualForm.cvFile.name}</p>
+                  <p className="text-xs sm:text-sm text-[#293749]/70 mt-1">Selected: {individualForm.cvFile.name} ({(individualForm.cvFile.size / (1024 * 1024)).toFixed(2)} MB)</p>
                 )}
               </div>
 
