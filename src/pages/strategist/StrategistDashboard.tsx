@@ -17,7 +17,6 @@ export default function StrategistDashboard() {
   const { user, logout } = authStore()
   
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('')
   const [showDropdown, setShowDropdown] = useState(false)
   const [projects, setProjects] = useState<Project[]>([])
   const [isSearching, setIsSearching] = useState(false)
@@ -45,7 +44,6 @@ export default function StrategistDashboard() {
   }
 
   const handleProjectSelect = async (projectId: string, projectName: string) => {
-    setSelectedProjectId(projectId)
     setSearchQuery(projectName)
     setShowDropdown(false)
     
@@ -60,7 +58,6 @@ export default function StrategistDashboard() {
 
   const handleClearSearch = () => {
     setSearchQuery('')
-    setSelectedProjectId('')
     setShowDropdown(false)
     setProjects([])
     window.dispatchEvent(new CustomEvent('clearProjectFilter'))
