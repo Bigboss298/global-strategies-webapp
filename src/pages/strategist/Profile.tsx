@@ -142,26 +142,26 @@ export default function Profile() {
           <div className="flex flex-col md:flex-row md:items-start mb-6">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6 flex-1">
               {/* Profile Photo with Badge Overlay */}
-              <div className="flex-shrink-0 relative">
+              <div className="flex-shrink-0 relative w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40">
                 {profile.profilePhotoUrl ? (
                   <img
                     src={profile.profilePhotoUrl}
                     alt={`${profile.firstName} ${profile.lastName}`}
-                    className="w-32 h-32 rounded-full object-cover border-4 border-blue-100"
+                    className="w-full h-full aspect-square rounded-full object-cover border-4 border-blue-100 shadow-lg"
                   />
                 ) : (
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-4xl font-bold border-4 border-blue-100">
+                  <div className="w-full h-full aspect-square rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-3xl sm:text-4xl md:text-5xl font-bold border-4 border-blue-100 shadow-lg">
                     {profile.firstName[0]}{profile.lastName[0]}
                   </div>
                 )}
                 {/* Badge Overlay: LinkedIn-style square with 'T' */}
                 {profile.badgeType !== undefined && (
                   <span
-                    className="absolute bottom-2 right-2 w-7 h-7 flex items-center justify-center rounded-md shadow-lg border border-white text-white font-bold text-base select-none"
+                    className="absolute bottom-2 right-2 w-7 h-7 flex items-center justify-center rounded rounded-full shadow-lg border border-white text-white font-bold text-base select-none"
                     style={{ background: BADGE_COLOR_MAP[profile.badgeType] || '#9CA3AF' }}
                     title="Strategist Badge"
                   >
-                    T
+                    S
                   </span>
                 )}
               </div>
@@ -176,13 +176,13 @@ export default function Profile() {
                 {/* Show badge name below name on profile page */}
                 {profile.badgeType !== undefined && profile.badgeType !== 0 && (
                   <div className="flex items-center gap-2 mb-2">
-                    <StrategistBadge badgeType={profile.badgeType} withDot={true} />
-                    <span className="text-sm font-medium text-gray-700">{
+                    {/* <StrategistBadge badgeType={profile.badgeType} withDot={true} /> */}
+                    {/* <span className="text-sm font-medium text-gray-700">{
                       profile.badgeType === 1 ? 'Verified' :
                       profile.badgeType === 2 ? 'Expert' :
                       profile.badgeType === 3 ? 'Premium' :
                       profile.badgeType === 4 ? 'Corporate' : 'None'
-                    }</span>
+                    }</span> */}
                   </div>
                 )}
 

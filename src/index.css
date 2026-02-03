@@ -19,6 +19,23 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Responsive base font size - smaller on mobile */
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -27,6 +44,143 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #F3F2EF;
   color: var(--tbp-text-primary);
+  line-height: 1.5;
+}
+
+/* Responsive Typography Utility Classes */
+.text-responsive-xs {
+  font-size: 0.7rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-xs {
+    font-size: 0.75rem;
+  }
+}
+
+.text-responsive-sm {
+  font-size: 0.8rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-sm {
+    font-size: 0.875rem;
+  }
+}
+
+.text-responsive-base {
+  font-size: 0.875rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-base {
+    font-size: 1rem;
+  }
+}
+
+.text-responsive-lg {
+  font-size: 1rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-lg {
+    font-size: 1.125rem;
+  }
+}
+
+.text-responsive-xl {
+  font-size: 1.125rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-xl {
+    font-size: 1.25rem;
+  }
+}
+
+.text-responsive-2xl {
+  font-size: 1.25rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-2xl {
+    font-size: 1.5rem;
+  }
+}
+
+.text-responsive-3xl {
+  font-size: 1.5rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-3xl {
+    font-size: 1.875rem;
+  }
+}
+
+.text-responsive-4xl {
+  font-size: 1.875rem;
+}
+@media (min-width: 640px) {
+  .text-responsive-4xl {
+    font-size: 2.25rem;
+  }
+}
+
+/* Responsive Spacing Utilities */
+.p-responsive {
+  padding: 1rem;
+}
+@media (min-width: 640px) {
+  .p-responsive {
+    padding: 1.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .p-responsive {
+    padding: 2rem;
+  }
+}
+
+.py-responsive {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+@media (min-width: 640px) {
+  .py-responsive {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .py-responsive {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+.px-responsive {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+@media (min-width: 640px) {
+  .px-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .px-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.gap-responsive {
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .gap-responsive {
+    gap: 1rem;
+  }
+}
+@media (min-width: 768px) {
+  .gap-responsive {
+    gap: 1.5rem;
+  }
 }
 
 /* LinkedIn-style Card Shadows */
@@ -65,4 +219,23 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #A0A0A0;
+}
+
+/* Mobile-first responsive image sizing */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive form grid - stacks on mobile */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .form-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

@@ -43,7 +43,7 @@ export const Home = () => {
   return (
     <div className="font-bold">
       {/* Section 1: Hero Section */}
-      <div className="relative min-h-screen bg-blue-900">
+      <div className="relative py-8 sm:py-0 sm:min-h-[70vh] md:min-h-[80vh] lg:min-h-screen bg-blue-900">
         {/* Background World Map Graphic */}
         <div className="absolute inset-0 opacity-20">
           <div className="h-full w-full bg-blue-900">
@@ -94,20 +94,20 @@ export const Home = () => {
         </div>
 
         {/* Main Content */}
-        <div className="relative z-10 container mx-auto px-4 py-16 md:py-24">
+        <div className="relative z-10 container mx-auto px-3 sm:px-4 py-6 sm:py-10 md:py-14 lg:py-20">
           <div className="max-w-5xl mx-auto text-center">
             {/* Slogan */}
-            <p className="text-green-400 text-base md:text-lg font-semibold mb-6 tracking-wide uppercase">
+            <p className="text-green-400 text-xs sm:text-sm md:text-base lg:text-lg font-semibold mb-2 sm:mb-3 md:mb-5 tracking-wide uppercase">
               CONNECTING GLOBAL STRATEGISTS FOR A BETTER FUTURE
             </p>
 
             {/* Main Title */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-8 leading-tight px-4">
+            <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight px-1 sm:px-4">
               Join TBP as a Global Strategist for The Neo-Polar Neutrality Global System
             </h1>
 
             {/* Description */}
-            <p className="text-white text-base md:text-lg lg:text-xl mb-12 max-w-4xl mx-auto leading-relaxed px-4">
+            <p className="text-white text-xs sm:text-sm md:text-base lg:text-lg mb-4 sm:mb-6 md:mb-10 max-w-4xl mx-auto leading-relaxed px-1 sm:px-4">
               At the heart of this effort is the Neo-Polar Neutrality Global System — a bold framework to move beyond
               gridlocked multilateralism and enable nations, businesses, and citizens to engage through neutral trade
               corridors, interoperable infrastructure, and shared digital/physical protocols — while preserving their
@@ -115,12 +115,12 @@ export const Home = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center items-center px-2 sm:px-4">
               <Link to="/register">
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-2 border-white bg-blue-900 text-white hover:bg-blue-800 min-w-[220px] h-12 text-base font-medium"
+                  className="border-2 border-white bg-blue-900 text-white hover:bg-blue-800 min-w-[160px] sm:min-w-[180px] md:min-w-[200px] h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base font-medium"
                 >
                   Become a Global Strategist
                 </Button>
@@ -129,9 +129,9 @@ export const Home = () => {
                 <Button
                   variant="primary"
                   size="lg"
-                  className="bg-white text-blue-900 hover:bg-gray-100 min-w-[180px] h-12 text-base font-medium"
+                  className="bg-white text-blue-900 hover:bg-gray-100 min-w-[120px] sm:min-w-[140px] md:min-w-[160px] h-9 sm:h-10 md:h-11 text-xs sm:text-sm md:text-base font-medium"
                 >
-                  <User className="h-5 w-5 mr-2" />
+                  <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5 mr-1.5 sm:mr-2" />
                   Login Now
                 </Button>
               </Link>
@@ -141,13 +141,13 @@ export const Home = () => {
       </div>
 
       {/* Section 2 & 3: Strategists Directory Section */}
-      <div className="bg-white min-h-screen py-12">
-        <div className="container mx-auto px-4">
+      <div className="bg-white min-h-screen py-6 sm:py-8 md:py-12">
+        <div className="container mx-auto px-3 sm:px-4">
           {/* Header with Title and Search */}
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+          <div className="mb-4 sm:mb-6 md:mb-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
               {/* Title */}
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">TBP Global Strategists</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">TBP Global Strategists</h1>
 
               {/* Search Bar */}
               <div className="flex gap-2">
@@ -159,7 +159,7 @@ export const Home = () => {
                   onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="w-full md:w-64"
                 />
-                <Button onClick={handleSearch} className="bg-blue-900 text-white hover:bg-blue-800 px-6">
+                <Button onClick={handleSearch} className="bg-blue-900 text-white hover:bg-blue-800 px-4 sm:px-6 text-sm sm:text-base">
                   Search
                 </Button>
               </div>
@@ -167,13 +167,13 @@ export const Home = () => {
 
             {/* Layout Toggle */}
             <div className="flex items-center gap-2">
-              <Grid3x3 className="h-5 w-5 text-gray-400" />
+              <Grid3x3 className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
             </div>
           </div>
 
           {/* Loading State */}
           {isLoading && (
-            <div className="flex justify-center py-12">
+            <div className="flex justify-center py-8 sm:py-12">
               <LoadingSpinner size="lg" />
             </div>
           )}
@@ -189,14 +189,14 @@ export const Home = () => {
           {/* Strategist Grid */}
           {!isLoading && strategists.length > 0 && (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {strategists.map((strategist) => (
                   <div
                     key={strategist.id}
                     className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                   >
                     {/* Background Map Banner */}
-                    <div className="h-28 bg-gradient-to-br from-teal-700 via-teal-600 to-green-600 relative overflow-hidden">
+                    <div className="h-20 sm:h-24 md:h-28 bg-gradient-to-br from-teal-700 via-teal-600 to-green-600 relative overflow-hidden">
                       {/* World map pattern with glowing lines */}
                       <div className="absolute inset-0">
                         <svg className="h-full w-full" viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -224,8 +224,8 @@ export const Home = () => {
                     </div>
 
                     {/* Profile Image */}
-                    <div className="flex justify-center -mt-14 mb-4 relative z-10">
-                      <div className="h-28 w-28 rounded-full bg-gray-200 border-4 border-white overflow-hidden shadow-md">
+                    <div className="flex justify-center -mt-10 sm:-mt-12 md:-mt-14 mb-3 sm:mb-4 relative z-10">
+                      <div className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full bg-gray-200 border-3 sm:border-4 border-white overflow-hidden shadow-md">
                         {strategist.profilePhotoUrl ? (
                           <img
                             src={strategist.profilePhotoUrl}
@@ -234,7 +234,7 @@ export const Home = () => {
                           />
                         ) : (
                           <div className="h-full w-full bg-gray-300 flex items-center justify-center">
-                            <span className="text-3xl font-semibold text-gray-600">
+                            <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-600">
                               {(strategist.fullName || strategist.firstName || 'S').charAt(0).toUpperCase()}
                             </span>
                           </div>
@@ -243,9 +243,9 @@ export const Home = () => {
                     </div>
 
                     {/* Name and Badge */}
-                    <div className="text-center px-4 pb-5">
+                    <div className="text-center px-3 sm:px-4 pb-4 sm:pb-5">
                       {strategist.fullName && (
-                        <h3 className="text-base font-semibold text-gray-900 mb-2 flex items-center gap-2 justify-center">
+                        <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2 justify-center">
                           {strategist.fullName}
                           <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
                         </h3>
@@ -262,7 +262,7 @@ export const Home = () => {
 
               {/* Pagination */}
               {pagination.totalPages > 1 && (
-                <div className="mb-8">
+                <div className="mb-6 sm:mb-8">
                   <Pagination
                     currentPage={pagination.pageNumber}
                     totalPages={pagination.totalPages}
@@ -276,8 +276,8 @@ export const Home = () => {
       </div>
 
       {/* Section 4: About TBP Global Strategist */}
-      <div className="bg-white py-12">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <div className="bg-white py-8 sm:py-12">
+        <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
           <h2 className="text-4xl font-bold text-blue-900 mb-8 text-center">About TBP Global Strategist</h2>
 
           <div className="space-y-6 text-gray-900 leading-relaxed mb-8">

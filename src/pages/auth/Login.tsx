@@ -37,26 +37,26 @@ export const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#F3F2EF] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#F3F2EF] flex items-center justify-center py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="w-full max-w-md">
         {/* TBP Logo/Brand */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-[#05A346] to-[#048A3B] mb-4">
-            <span className="text-3xl font-bold text-[#FEFEFE]">TBP</span>
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#05A346] to-[#048A3B] mb-3 sm:mb-4">
+            <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FEFEFE]">TBP</span>
           </div>
-          <h1 className="text-3xl font-bold text-[#183A64] mb-2">Welcome Back</h1>
-          <p className="text-[#293749]/70">Sign in to your Global Strategist Platform account</p>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#183A64] mb-1 sm:mb-2">Welcome Back</h1>
+          <p className="text-sm sm:text-base text-[#293749]/70">Sign in to your Global Strategist Platform account</p>
         </div>
 
-        <Card className="p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <Card className="p-4 sm:p-6 md:p-8">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-r-md text-sm">
+              <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded-r-md text-xs sm:text-sm">
                 {error}
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <Label htmlFor="email" className="text-[#293749] font-medium">Email</Label>
               <Input
                 id="email"
@@ -68,7 +68,7 @@ export const Login = () => {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1 sm:space-y-2">
               <Label htmlFor="password" className="text-[#293749] font-medium">Password</Label>
               <Input
                 id="password"
@@ -81,26 +81,26 @@ export const Login = () => {
             </div>
 
             <div className="flex items-center justify-between">
-              <Link to="/forgot-password" className="text-sm text-[#05A346] hover:text-[#048A3B] font-medium tbp-transition">
+              <Link to="/forgot-password" className="text-xs sm:text-sm text-[#05A346] hover:text-[#048A3B] font-medium tbp-transition">
                 Forgot password?
               </Link>
             </div>
 
-            <Button type="submit" className="w-full" size="lg" isLoading={isLoading}>
+            <Button type="submit" className="w-full text-sm sm:text-base" size="lg" isLoading={isLoading}>
               Sign In
             </Button>
 
-            <div className="relative my-6">
+            <div className="relative my-4 sm:my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
               </div>
-              <div className="relative flex justify-center text-sm">
+              <div className="relative flex justify-center text-xs sm:text-sm">
                 <span className="px-4 bg-[#FEFEFE] text-gray-500">New to TBP?</span>
               </div>
             </div>
 
             <Link to="/register" className="block">
-              <Button type="button" variant="outline" className="w-full" size="lg">
+              <Button type="button" variant="outline" className="w-full text-sm sm:text-base" size="lg">
                 Create Account
               </Button>
             </Link>

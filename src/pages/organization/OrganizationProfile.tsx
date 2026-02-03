@@ -99,15 +99,15 @@ export default function OrganizationProfile() {
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-start gap-6">
               {/* Profile Photo */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40">
                 {profile.profilePhotoUrl ? (
                   <img
                     src={profile.profilePhotoUrl}
                     alt={`${profile.firstName} ${profile.lastName}`}
-                    className="w-32 h-32 rounded-full object-cover border-4 border-[#183A64]/20"
+                    className="w-full h-full aspect-square rounded-full object-cover border-4 border-[#183A64]/20 shadow-lg"
                   />
                 ) : (
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#183A64] to-[#05A346] flex items-center justify-center text-white text-4xl font-bold border-4 border-[#183A64]/20">
+                  <div className="w-full h-full aspect-square rounded-full bg-gradient-to-br from-[#183A64] to-[#05A346] flex items-center justify-center text-white text-3xl sm:text-4xl md:text-5xl font-bold border-4 border-[#183A64]/20 shadow-lg">
                     {profile.firstName[0]}{profile.lastName[0]}
                   </div>
                 )}

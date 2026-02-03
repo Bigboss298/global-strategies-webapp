@@ -45,13 +45,14 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, className }:
   }
 
   return (
-    <div className={cn('flex items-center justify-center gap-2', className)}>
+    <div className={cn('flex items-center justify-center gap-1 sm:gap-2 flex-wrap', className)}>
       <Button
         variant="outline"
         size="sm"
         onClick={() => onPageChange(1)}
         disabled={currentPage === 1}
         aria-label="First page"
+        className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 text-xs sm:text-sm"
       >
         &laquo;
       </Button>
@@ -61,6 +62,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, className }:
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         aria-label="Previous page"
+        className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 text-xs sm:text-sm"
       >
         &lsaquo;
       </Button>
@@ -68,7 +70,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, className }:
       {getPageNumbers().map((page, index) => (
         <div key={index}>
           {page === '...' ? (
-            <span className="px-3 py-2 text-gray-500">...</span>
+            <span className="px-1.5 sm:px-3 py-2 text-gray-500 text-xs sm:text-sm">...</span>
           ) : (
             <Button
               variant={currentPage === page ? 'primary' : 'outline'}
@@ -76,6 +78,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, className }:
               onClick={() => onPageChange(page as number)}
               aria-label={`Page ${page}`}
               aria-current={currentPage === page ? 'page' : undefined}
+              className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 text-xs sm:text-sm"
             >
               {page}
             </Button>
@@ -89,6 +92,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, className }:
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         aria-label="Next page"
+        className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 text-xs sm:text-sm"
       >
         &rsaquo;
       </Button>
@@ -98,6 +102,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, className }:
         onClick={() => onPageChange(totalPages)}
         disabled={currentPage === totalPages}
         aria-label="Last page"
+        className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 p-0 text-xs sm:text-sm"
       >
         &raquo;
       </Button>

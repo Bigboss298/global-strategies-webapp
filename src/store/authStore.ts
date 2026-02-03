@@ -111,12 +111,27 @@ export const authStore = create<AuthState>()((set, get) => ({
         error: null,
       })
     } catch (error: any) {
-      const errorMessage = typeof error.response?.data === 'string'
-        ? error.response.data
-        : error.response?.data?.message
-          || error.response?.data?.title
-          || error.message
-          || 'Registration failed'
+      let errorMessage = 'Registration failed'
+      
+      if (error.response?.data) {
+        const data = error.response.data
+        if (typeof data === 'string') {
+          errorMessage = data
+        } else if (data.errors && typeof data.errors === 'object') {
+          // Handle validation errors object
+          const errorMessages = Object.entries(data.errors)
+            .map(([field, messages]) => `${field}: ${(messages as string[]).join(', ')}`)
+            .join('; ')
+          errorMessage = data.message ? `${data.message}: ${errorMessages}` : errorMessages
+        } else if (data.message) {
+          errorMessage = data.message
+        } else if (data.title) {
+          errorMessage = data.title
+        }
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
       set({
         isLoading: false,
         error: errorMessage,

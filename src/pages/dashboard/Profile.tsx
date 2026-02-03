@@ -84,11 +84,11 @@ export const Profile = () => {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-6">
-              <div className="h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+              <div className="h-28 w-28 sm:h-32 sm:w-32 md:h-36 md:w-36 aspect-square rounded-full bg-gray-200 flex items-center justify-center overflow-hidden shadow-lg border-4 border-gray-100">
                 {user?.profilePhotoUrl ? (
-                  <img src={user.profilePhotoUrl} alt={user.fullName || `${user.firstName} ${user.lastName}`} className="h-full w-full object-cover" />
+                  <img src={user.profilePhotoUrl} alt={user.fullName || `${user.firstName} ${user.lastName}`} className="h-full w-full aspect-square object-cover" />
                 ) : (
-                  <span className="text-3xl font-semibold text-gray-600">
+                  <span className="text-3xl sm:text-4xl font-semibold text-gray-600">
                     {user?.firstName?.charAt(0).toUpperCase() || 'U'}
                   </span>
                 )}
