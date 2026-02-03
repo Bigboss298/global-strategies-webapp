@@ -28,6 +28,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { user, logout } = authStore()
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [currentDateTime, setCurrentDateTime] = useState(new Date())
 
   useEffect(() => {
     if (user?.role !== 1) {
@@ -42,6 +43,24 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDateTime(new Date())
+    }, 60000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const formatDateTime = (date: Date) => {
+    return date.toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -74,8 +93,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         <div className="p-6">
           {/* Logo */}
           <Link to="/admin" className="block mb-8">
-            <img src={tbpLogo} alt="TBP" className="h-10 w-auto object-contain mb-3" />
-            <div className="text-[#FEFEFE] text-sm font-semibold">Admin Panel</div>
+            <img src={tbpLogo} alt="TBP" className="h-10 w-auto object-contain" />
           </Link>
 
           {/* Navigation */}
@@ -150,7 +168,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                     className="h-8 w-auto object-contain lg:hidden" 
                   />
                   <h1 className="hidden lg:block text-xl sm:text-2xl font-bold text-[#293749]">
-                    {navItems.find(item => location.pathname.startsWith(item.path))?.label || 'Dashboard'}
+                    {formatDateTime(currentDateTime)}
                   </h1>
                 </div>
               </div>
@@ -172,8 +190,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
               <div className="p-6">
                 {/* Logo */}
                 <Link to="/admin" onClick={closeMobileMenu} className="block mb-8">
-                  <img src={tbpLogo} alt="TBP" className="h-10 w-auto object-contain mb-3" />
-                  <div className="text-[#FEFEFE] text-sm font-semibold">Admin Panel</div>
+                  <img src={tbpLogo} alt="TBP" className="h-10 w-auto object-contain" />
                 </Link>
 
                 {/* Navigation */}

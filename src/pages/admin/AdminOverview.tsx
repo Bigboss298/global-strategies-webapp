@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { adminDashboardStore } from '../../store/admin/adminDashboardStore'
 import TBPLoader from '../../components/TBPLoader'
+import { Building2, Users, FolderTree, FolderKanban, TrendingUp } from 'lucide-react'
 
 export default function AdminOverview() {
   const {
@@ -31,21 +32,33 @@ export default function AdminOverview() {
       label: 'Total Organizations',
       value: organizations.length,
       color: 'bg-blue-500',
+      lightColor: 'bg-blue-50',
+      textColor: 'text-blue-600',
+      icon: Building2,
     },
     {
       label: 'Total Users',
       value: users.length,
       color: 'bg-green-500',
+      lightColor: 'bg-green-50',
+      textColor: 'text-green-600',
+      icon: Users,
     },
     {
       label: 'Categories',
       value: categories.length,
       color: 'bg-purple-500',
+      lightColor: 'bg-purple-50',
+      textColor: 'text-purple-600',
+      icon: FolderTree,
     },
     {
       label: 'Projects',
       value: projects.length,
       color: 'bg-orange-500',
+      lightColor: 'bg-orange-50',
+      textColor: 'text-orange-600',
+      icon: FolderKanban,
     },
   ]
 
@@ -64,18 +77,26 @@ export default function AdminOverview() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-white rounded-lg shadow p-6 border border-gray-200"
-          >
-            <div className={`w-12 h-12 ${stat.color} rounded-lg mb-4`}></div>
-            <p className="text-gray-600 text-sm">{stat.label}</p>
-            <p className="text-3xl font-bold text-gray-900 mt-2">
-              {stat.value}
-            </p>
-          </div>
-        ))}
+        {stats.map((stat) => {
+          const Icon = stat.icon
+          return (
+            <div
+              key={stat.label}
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className={`w-12 h-12 ${stat.lightColor} rounded-lg flex items-center justify-center`}>
+                  <Icon className={`w-6 h-6 ${stat.textColor}`} />
+                </div>
+                <TrendingUp className="w-4 h-4 text-green-500" />
+              </div>
+              <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {stat.value}
+              </p>
+            </div>
+          )
+        })}
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">

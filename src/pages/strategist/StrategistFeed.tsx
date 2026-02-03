@@ -29,7 +29,7 @@ const formatDateTime = (dateString: string | undefined) => {
 }
 
 export default function StrategistFeed() {
-  const { feed, isLoadingFeed, fetchFeed, comments, fetchCommentsByReport, postComment, error } = strategistDashboardStore()
+  const { feed, isLoadingFeed, fetchFeed, fetchFeedByProject, comments, fetchCommentsByReport, postComment, error } = strategistDashboardStore()
   const { user } = authStore()
   const [expandedReport, setExpandedReport] = useState<string | null>(null)
   const [commentText, setCommentText] = useState('')
@@ -39,6 +39,23 @@ export default function StrategistFeed() {
 
   useEffect(() => {
     fetchFeed()
+
+    // Listen for filter events from navbar
+    const handleFilterByProject = (event: CustomEvent) => {
+      fetchFeedByProject(event.detail.projectId)
+    }
+
+    const handleClearFilter = () => {
+      fetchFeed()
+    }
+
+    window.addEventListener('filterByProject', handleFilterByProject as EventListener)
+    window.addEventListener('clearProjectFilter', handleClearFilter)
+
+    return () => {
+      window.removeEventListener('filterByProject', handleFilterByProject as EventListener)
+      window.removeEventListener('clearProjectFilter', handleClearFilter)
+    }
   }, [])
 
   const handleReaction = async (reportId: string, reactionType: ReactionType) => {

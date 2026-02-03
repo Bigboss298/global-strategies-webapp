@@ -88,6 +88,7 @@ interface StrategistDashboardState {
   
   // Actions - Feed
   fetchFeed: () => Promise<void>
+  fetchFeedByProject: (projectId: string) => Promise<void>
   fetchMyReports: (userId: string) => Promise<void>
   
   // Actions - Submit Report
@@ -142,6 +143,23 @@ export const strategistDashboardStore = create<StrategistDashboardState>((set, g
       set({
         isLoadingFeed: false,
         error: error.response?.data?.message || 'Failed to fetch feed',
+      })
+    }
+  },
+
+  // Fetch feed by project
+  fetchFeedByProject: async (projectId: string) => {
+    set({ isLoadingFeed: true, error: null })
+    try {
+      const response = await axiosInstance.get<ReportFeed[]>(`/report/feed/project/${projectId}`)
+      set({
+        feed: response.data,
+        isLoadingFeed: false,
+      })
+    } catch (error: any) {
+      set({
+        isLoadingFeed: false,
+        error: error.response?.data?.message || 'Failed to fetch reports for this project',
       })
     }
   },

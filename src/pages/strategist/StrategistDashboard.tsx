@@ -1,12 +1,70 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { Rss, FileText, User, LogOut, Home } from 'lucide-react'
+import { Rss, FileText, User, LogOut, Home, Search, X } from 'lucide-react'
 import { authStore } from '../../store/authStore'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
+import { useState } from 'react'
+import axiosInstance from '../../api/axiosInstance'
+
+interface Project {
+  id: string
+  name: string
+  description?: string
+}
 
 export default function StrategistDashboard() {
   const navigate = useNavigate()
   const location = useLocation()
   const { user, logout } = authStore()
+  
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('')
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [projects, setProjects] = useState<Project[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+
+  const handleSearchChange = async (value: string) => {
+    setSearchQuery(value)
+    setShowDropdown(true)
+    
+    if (value.trim().length < 2) {
+      setProjects([])
+      return
+    }
+
+    setIsSearching(true)
+    try {
+      // Search projects on backend
+      const response = await axiosInstance.get<Project[]>(`/project?search=${encodeURIComponent(value)}`)
+      setProjects(response.data)
+    } catch (error) {
+      console.error('Failed to search projects:', error)
+      setProjects([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  const handleProjectSelect = async (projectId: string, projectName: string) => {
+    setSelectedProjectId(projectId)
+    setSearchQuery(projectName)
+    setShowDropdown(false)
+    
+    // Navigate to feed if not already there
+    if (location.pathname !== '/strategist/dashboard') {
+      navigate('/strategist/dashboard')
+    }
+    
+    // The feed component will pick up the filter from URL or event
+    window.dispatchEvent(new CustomEvent('filterByProject', { detail: { projectId } }))
+  }
+
+  const handleClearSearch = () => {
+    setSearchQuery('')
+    setSelectedProjectId('')
+    setShowDropdown(false)
+    setProjects([])
+    window.dispatchEvent(new CustomEvent('clearProjectFilter'))
+  }
 
   const handleLogout = () => {
     logout()
@@ -24,15 +82,63 @@ export default function StrategistDashboard() {
       {/* LinkedIn-style Top Navbar */}
       <header className="bg-[#FEFEFE] border-b tbp-border sticky top-0 z-50 tbp-card-shadow">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Left: Logo */}
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between h-16 gap-4">
+            {/* Left: Logo - Hidden on mobile */}
+            <div className="hidden md:flex items-center gap-4 flex-shrink-0">
               <Link to="/" className="flex items-center">
                 <img src={tbpLogo} alt="TBP" className="h-10 w-auto object-contain" />
               </Link>
             </div>
 
-            {/* Center: Navigation - Desktop Only */}
+            {/* Search Bar - Full width on mobile, centered on desktop */}
+            <div className="flex flex-1 md:max-w-md relative">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  placeholder="Search reports by project..."
+                  className="w-full pl-9 pr-9 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={handleClearSearch}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              {/* Project Suggestions Dropdown */}
+              {showDropdown && searchQuery.length >= 2 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+                  {isSearching ? (
+                    <div className="px-4 py-3 text-sm text-gray-500">Searching...</div>
+                  ) : projects.length > 0 ? (
+                    projects.map((project) => (
+                      <button
+                        key={project.id}
+                        onClick={() => handleProjectSelect(project.id, project.name)}
+                        className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                      >
+                        <div className="font-medium text-sm text-[#293749]">{project.name}</div>
+                        {project.description && (
+                          <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">{project.description}</div>
+                        )}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-3 text-sm text-gray-500">No projects found</div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Right: Navigation - Desktop Only */}
             <nav className="hidden md:flex items-center gap-1">
               {tabs.map((tab) => {
                 const Icon = tab.icon

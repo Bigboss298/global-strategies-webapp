@@ -104,17 +104,19 @@ export default function MyReports() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <p className="text-[#293749]/60 text-lg">{myReports.length} published reports</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#293749] mb-2">My Reports</h1>
+          <p className="text-[#293749]/60 text-sm sm:text-base">{myReports.length} {myReports.length === 1 ? 'report' : 'reports'} published</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 w-12 h-12 sm:w-auto sm:h-auto sm:px-5 sm:py-2.5 bg-[#05A346] text-white rounded-full sm:rounded-lg hover:bg-[#048A3B] transition-all shadow-md hover:shadow-lg"
+          title="Create new report"
         >
           <Plus className="w-5 h-5" />
-          New Report
+          <span className="hidden sm:inline font-medium">New Report</span>
         </button>
       </div>
 
@@ -130,92 +132,105 @@ export default function MyReports() {
         </div>
       )}
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {myReports.map((report) => (
           <div
             key={report.id}
-            className="bg-white rounded-lg shadow p-6 border border-gray-200"
+            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
           >
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-[#293749] mb-2 flex items-center gap-2">
                   {report.title}
-                  {/* Show badge after name (user is always the author) */}
                   <StrategistBadge badgeType={user?.badgeType} withDot={true} />
                 </h3>
-                <p className="text-gray-700 mb-4">{report.content}</p>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {report.categoryName && (
-                    <span className="px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                      📁 {report.categoryName}
-                    </span>
-                  )}
-                  {report.projectName && (
-                    <span className="px-3 py-1 text-xs bg-green-100 text-green-800 rounded-full">
-                      📊 {report.projectName}
-                    </span>
-                  )}
-                  {report.fieldName && (
-                    <span className="px-3 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-                      🎯 {report.fieldName}
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center space-x-4 text-gray-600">
-                    <span>💬 {report.commentsCount || 0} comments</span>
-                    <span>👍 {report.reactionsSummary?.like || 0}</span>
-                    <span>❤️ {report.reactionsSummary?.love || 0}</span>
-                    <span>💡 {report.reactionsSummary?.insightful || 0}</span>
-                    <span>👎 {report.reactionsSummary?.dislike || 0}</span>
-                  </div>
-                  <div className="text-gray-500">
-                    {formatDate(report.dateCreated)} at {formatTime(report.dateCreated)}
-                  </div>
-                </div>
+                <p className="text-[#293749]/80 leading-relaxed">{report.content}</p>
               </div>
             </div>
 
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {report.categoryName && (
+                <span className="px-3 py-1.5 text-xs font-medium bg-blue-50 text-blue-700 rounded-full border border-blue-100">
+                  📁 {report.categoryName}
+                </span>
+              )}
+              {report.projectName && (
+                <span className="px-3 py-1.5 text-xs font-medium bg-green-50 text-green-700 rounded-full border border-green-100">
+                  📊 {report.projectName}
+                </span>
+              )}
+              {report.fieldName && (
+                <span className="px-3 py-1.5 text-xs font-medium bg-purple-50 text-purple-700 rounded-full border border-purple-100">
+                  🎯 {report.fieldName}
+                </span>
+              )}
+            </div>
+
+            {/* Images */}
             {report.images && report.images.length > 0 && (
-              <div className="mt-4 flex gap-2">
+              <div className="mb-4 grid grid-cols-3 gap-3">
                 {report.images.slice(0, 3).map((img, idx) => (
                   <img
                     key={idx}
                     src={img}
                     alt={`Report image ${idx + 1}`}
-                    className="w-24 h-24 object-cover rounded"
+                    className="w-full h-32 object-cover rounded-lg border border-gray-200"
                   />
                 ))}
               </div>
             )}
+
+            {/* Stats Footer */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-4 text-sm text-[#293749]/60">
+                <span className="flex items-center gap-1.5">
+                  💬 <span className="font-medium">{report.commentsCount || 0}</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  👍 <span className="font-medium">{report.reactionsSummary?.like || 0}</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  ❤️ <span className="font-medium">{report.reactionsSummary?.love || 0}</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  💡 <span className="font-medium">{report.reactionsSummary?.insightful || 0}</span>
+                </span>
+              </div>
+              <div className="text-sm text-[#293749]/50 font-medium">
+                {formatDate(report.dateCreated)} • {formatTime(report.dateCreated)}
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
       {myReports.length === 0 && (
-        <div className="text-center py-12 bg-white rounded-lg shadow">
-          <p className="text-gray-500 mb-4">You haven't submitted any reports yet.</p>
+        <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-sm border border-gray-100">
+          <div className="w-20 h-20 bg-[#05A346]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Plus className="w-10 h-10 text-[#05A346]" />
+          </div>
+          <h3 className="text-xl font-bold text-[#293749] mb-2">No Reports Yet</h3>
+          <p className="text-[#293749]/60 mb-6 max-w-md mx-auto">Start sharing your insights by creating your first report.</p>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#05A346] text-white rounded-lg hover:bg-[#048A3B] transition-all shadow-md hover:shadow-lg font-medium"
           >
             <Plus className="w-5 h-5" />
-            Submit Your First Report
+            Create Your First Report
           </button>
         </div>
       )}
 
       {/* Submit Report Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
-              <h3 className="text-xl font-bold">Submit New Report</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-5 flex items-center justify-between rounded-t-2xl">
+              <h3 className="text-2xl font-bold text-[#293749]">Create New Report</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-2 transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -229,7 +244,7 @@ export default function MyReports() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-[#293749] mb-2">
                   Report Title *
                 </label>
                 <input
@@ -237,35 +252,35 @@ export default function MyReports() {
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter a descriptive title"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all"
+                  placeholder="Enter a descriptive title for your report"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-[#293749] mb-2">
                   Content *
                 </label>
                 <textarea
                   required
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all"
                   rows={8}
-                  placeholder="Write your detailed report here..."
+                  placeholder="Share your detailed insights and findings..."
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-[#293749] mb-2">
                     Category *
                   </label>
                   <select
                     required
                     value={formData.categoryId}
                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value, projectId: '', fieldId: '' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all bg-white"
                   >
                     <option value="">Select category</option>
                     {categories.map((cat) => (
@@ -277,14 +292,14 @@ export default function MyReports() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-[#293749] mb-2">
                     Project *
                   </label>
                   <select
                     required
                     value={formData.projectId}
                     onChange={(e) => setFormData({ ...formData, projectId: e.target.value, fieldId: '' })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all bg-white disabled:bg-gray-50 disabled:text-gray-500"
                     disabled={!formData.categoryId || filteredProjects.length === 0}
                   >
                     <option value="">Select project</option>
@@ -297,14 +312,14 @@ export default function MyReports() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-[#293749] mb-2">
                     Field *
                   </label>
                   <select
                     required
                     value={formData.fieldId}
                     onChange={(e) => setFormData({ ...formData, fieldId: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all bg-white disabled:bg-gray-50 disabled:text-gray-500"
                     disabled={!formData.projectId || filteredFields.length === 0}
                   >
                     <option value="">Select field</option>
@@ -318,8 +333,8 @@ export default function MyReports() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Image URLs (optional)
+                <label className="block text-sm font-semibold text-[#293749] mb-2">
+                  Image URLs <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <input
                   type="text"
@@ -330,17 +345,17 @@ export default function MyReports() {
                       images: e.target.value.split(',').map((url) => url.trim()).filter(Boolean),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Comma-separated image URLs"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all"
+                  placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1.5">
                   Enter image URLs separated by commas
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  File URLs (optional)
+                <label className="block text-sm font-semibold text-[#293749] mb-2">
+                  File URLs <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <input
                   type="text"
@@ -351,25 +366,25 @@ export default function MyReports() {
                       files: e.target.value.split(',').map((url) => url.trim()).filter(Boolean),
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Comma-separated file URLs"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all"
+                  placeholder="https://example.com/file1.pdf, https://example.com/file2.doc"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1.5">
                   Enter file URLs separated by commas
                 </p>
               </div>
 
-              <div className="flex justify-end space-x-4 pt-6 border-t">
+              <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-6 py-2.5 bg-[#05A346] text-white rounded-lg hover:bg-[#048A3B] transition-all shadow-md hover:shadow-lg font-medium"
                 >
                   Submit Report
                 </button>
