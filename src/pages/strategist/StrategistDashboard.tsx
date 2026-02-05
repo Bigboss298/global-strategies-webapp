@@ -1,15 +1,11 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { Rss, FileText, User, LogOut, Home, Search, X } from 'lucide-react'
+import { Rss, FileText, User, LogOut, Search, X, Users, FolderKanban, Eye } from 'lucide-react'
 import { authStore } from '../../store/authStore'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
-import { useState } from 'react'
-import axiosInstance from '../../api/axiosInstance'
-
-interface Project {
-  id: string
-  name: string
-  description?: string
-}
+import { useState, useEffect } from 'react'
+import { useContextSearch } from '../../hooks/useContextSearch'
+import { CountryFlag } from '../../components/ui/CountryFlag'
+import { StrategistBadge } from '../../components/StrategistBadge'
 
 export default function StrategistDashboard() {
   const navigate = useNavigate()
@@ -18,32 +14,39 @@ export default function StrategistDashboard() {
   
   const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
-  const [projects, setProjects] = useState<Project[]>([])
-  const [isSearching, setIsSearching] = useState(false)
+
+  // Use context-aware search hook
+  const {
+    searchContext,
+    placeholder,
+    isSearchDisabled,
+    isSearching,
+    results,
+    search,
+    clearResults,
+    handleProjectSelect: onProjectSelect,
+    handleClearFilter,
+  } = useContextSearch(user?.id)
+
+  // Clear search when navigating to a new page
+  useEffect(() => {
+    setSearchQuery('')
+    clearResults()
+  }, [location.pathname, clearResults])
 
   const handleSearchChange = async (value: string) => {
     setSearchQuery(value)
     setShowDropdown(true)
     
     if (value.trim().length < 2) {
-      setProjects([])
+      clearResults()
       return
     }
 
-    setIsSearching(true)
-    try {
-      // Search projects on backend
-      const response = await axiosInstance.get<Project[]>(`/project?search=${encodeURIComponent(value)}`)
-      setProjects(response.data)
-    } catch (error) {
-      console.error('Failed to search projects:', error)
-      setProjects([])
-    } finally {
-      setIsSearching(false)
-    }
+    await search(value)
   }
 
-  const handleProjectSelect = async (projectId: string, projectName: string) => {
+  const handleProjectSelect = (projectId: string, projectName: string) => {
     setSearchQuery(projectName)
     setShowDropdown(false)
     
@@ -52,15 +55,39 @@ export default function StrategistDashboard() {
       navigate('/strategist/dashboard')
     }
     
-    // The feed component will pick up the filter from URL or event
-    window.dispatchEvent(new CustomEvent('filterByProject', { detail: { projectId } }))
+    onProjectSelect(projectId, projectName)
+  }
+
+  const handleStrategistSelect = (strategistId: string) => {
+    setSearchQuery('')
+    setShowDropdown(false)
+    clearResults()
+    navigate(`/strategist/view/${strategistId}`)
+  }
+
+  const handleProjectNavigate = (projectId: string) => {
+    setSearchQuery('')
+    setShowDropdown(false)
+    clearResults()
+    navigate(`/strategist/projects/${projectId}`)
+  }
+
+  const handleReportSelect = (reportId: string) => {
+    setSearchQuery('')
+    setShowDropdown(false)
+    clearResults()
+    navigate(`/strategist/reports/${reportId}`)
   }
 
   const handleClearSearch = () => {
     setSearchQuery('')
     setShowDropdown(false)
-    setProjects([])
-    window.dispatchEvent(new CustomEvent('clearProjectFilter'))
+    clearResults()
+    if (searchContext === 'feed') {
+      handleClearFilter()
+    }
+    // Dispatch events to clear local page filters
+    window.dispatchEvent(new CustomEvent('clearGlobalSearch'))
   }
 
   const handleLogout = () => {
@@ -71,6 +98,8 @@ export default function StrategistDashboard() {
   const tabs = [
     { id: 'feed', label: 'Feed', path: '/strategist/dashboard', icon: Rss },
     { id: 'my-reports', label: 'My Reports', path: '/strategist/my-reports', icon: FileText },
+    { id: 'strategists', label: 'Strategists', path: '/strategist/browse', icon: Users },
+    { id: 'projects', label: 'Projects', path: '/strategist/projects', icon: FolderKanban },
     { id: 'profile', label: 'Profile', path: '/strategist/profile', icon: User },
   ]
 
@@ -95,12 +124,13 @@ export default function StrategistDashboard() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => setShowDropdown(true)}
+                  onFocus={() => !isSearchDisabled && setShowDropdown(true)}
                   onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-                  placeholder="Search reports by project..."
-                  className="w-full pl-9 pr-9 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all bg-gray-50 focus:bg-white"
+                  placeholder={placeholder}
+                  disabled={isSearchDisabled}
+                  className={`w-full pl-9 pr-9 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#05A346] focus:border-transparent transition-all bg-gray-50 focus:bg-white ${isSearchDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                 />
-                {searchQuery && (
+                {searchQuery && !isSearchDisabled && (
                   <button
                     onClick={handleClearSearch}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
@@ -110,26 +140,135 @@ export default function StrategistDashboard() {
                 )}
               </div>
 
-              {/* Project Suggestions Dropdown */}
-              {showDropdown && searchQuery.length >= 2 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
+              {/* Context-aware Search Results Dropdown */}
+              {showDropdown && searchQuery.length >= 2 && !isSearchDisabled && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto z-50">
                   {isSearching ? (
                     <div className="px-4 py-3 text-sm text-gray-500">Searching...</div>
-                  ) : projects.length > 0 ? (
-                    projects.map((project) => (
-                      <button
-                        key={project.id}
-                        onClick={() => handleProjectSelect(project.id, project.name)}
-                        className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-                      >
-                        <div className="font-medium text-sm text-[#293749]">{project.name}</div>
-                        {project.description && (
-                          <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">{project.description}</div>
-                        )}
-                      </button>
-                    ))
                   ) : (
-                    <div className="px-4 py-3 text-sm text-gray-500">No projects found</div>
+                    <>
+                      {/* Feed Context - Show projects to filter by */}
+                      {searchContext === 'feed' && results?.projects && (
+                        results.projects.length > 0 ? (
+                          results.projects.map((project) => (
+                            <button
+                              key={project.id}
+                              onClick={() => handleProjectSelect(project.id, project.name)}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                            >
+                              <div className="flex items-center gap-2">
+                                <FolderKanban className="w-4 h-4 text-[#05A346]" />
+                                <div className="font-medium text-sm text-[#293749]">{project.name}</div>
+                              </div>
+                              {project.description && (
+                                <div className="text-xs text-gray-500 mt-0.5 ml-6 line-clamp-1">{project.description}</div>
+                              )}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-4 py-3 text-sm text-gray-500">No projects found</div>
+                        )
+                      )}
+
+                      {/* Strategists Context - Show strategist results */}
+                      {searchContext === 'strategists' && results?.strategists && (
+                        results.strategists.length > 0 ? (
+                          results.strategists.map((strategist) => (
+                            <button
+                              key={strategist.id}
+                              onClick={() => handleStrategistSelect(strategist.id)}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                            >
+                              <div className="flex items-center gap-3">
+                                {strategist.profilePhotoUrl ? (
+                                  <img
+                                    src={strategist.profilePhotoUrl}
+                                    alt={strategist.fullName || `${strategist.firstName} ${strategist.lastName}`}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-white font-semibold text-xs">
+                                    {(strategist.fullName || strategist.firstName || 'U').charAt(0).toUpperCase()}
+                                  </div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-sm text-[#293749] flex items-center gap-1">
+                                    <span className="truncate">
+                                      {strategist.fullName || `${strategist.firstName} ${strategist.lastName}`}
+                                    </span>
+                                    <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
+                                  </div>
+                                  {strategist.headline && (
+                                    <div className="text-xs text-gray-500 truncate">{strategist.headline}</div>
+                                  )}
+                                  {strategist.country && (
+                                    <div className="text-xs mt-0.5">
+                                      <CountryFlag countryName={strategist.country} />
+                                    </div>
+                                  )}
+                                </div>
+                                <Eye className="w-4 h-4 text-gray-400" />
+                              </div>
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-4 py-3 text-sm text-gray-500">No strategists found</div>
+                        )
+                      )}
+
+                      {/* Projects Context - Show projects to navigate to */}
+                      {searchContext === 'projects' && results?.projects && (
+                        results.projects.length > 0 ? (
+                          results.projects.map((project) => (
+                            <button
+                              key={project.id}
+                              onClick={() => handleProjectNavigate(project.id)}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                            >
+                              <div className="flex items-center gap-2">
+                                <FolderKanban className="w-4 h-4 text-[#05A346]" />
+                                <div className="font-medium text-sm text-[#293749]">{project.name}</div>
+                                <Eye className="w-4 h-4 text-gray-400 ml-auto" />
+                              </div>
+                              {project.description && (
+                                <div className="text-xs text-gray-500 mt-0.5 ml-6 line-clamp-1">{project.description}</div>
+                              )}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-4 py-3 text-sm text-gray-500">No projects found</div>
+                        )
+                      )}
+
+                      {/* My Reports Context - Show user's reports */}
+                      {searchContext === 'my-reports' && results?.reports && (
+                        results.reports.length > 0 ? (
+                          results.reports.map((report) => (
+                            <button
+                              key={report.id}
+                              onClick={() => handleReportSelect(report.id)}
+                              className="w-full text-left px-4 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
+                            >
+                              <div className="flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-[#05A346]" />
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-sm text-[#293749] truncate">{report.title}</div>
+                                  <div className="text-xs text-gray-500">{report.projectName} • {report.fieldName}</div>
+                                </div>
+                                <Eye className="w-4 h-4 text-gray-400" />
+                              </div>
+                            </button>
+                          ))
+                        ) : (
+                          <div className="px-4 py-3 text-sm text-gray-500">No reports found</div>
+                        )
+                      )}
+
+                      {/* No results case */}
+                      {!results && !isSearching && (
+                        <div className="px-4 py-3 text-sm text-gray-500">No results found</div>
+                      )}
+                    </>
                   )}
                 </div>
               )}
@@ -160,13 +299,6 @@ export default function StrategistDashboard() {
 
             {/* Right: User Profile & Actions */}
             <div className="flex items-center gap-3">
-              <Link to="/" className="hidden md:block">
-                <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-[#293749]/70 hover:bg-gray-100 tbp-transition">
-                  <Home className="w-5 h-5" />
-                  <span className="hidden md:inline text-sm font-medium">Home</span>
-                </button>
-              </Link>
-
               <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100">
                 {/* Badge - Show first on mobile, hide on desktop */}
                 <span className="inline-block px-2 py-0.5 bg-[#05A346] text-[#FEFEFE] text-xs font-medium rounded-full lg:hidden">Strategist</span>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 import { authStore } from '../store/authStore'
 
 interface ProtectedRouteProps {
@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRouteProps) => {
   const { isAuthenticated, user, accessToken } = authStore()
+  const location = useLocation()
 
   // Check if we have a token in sessionStorage but state hasn't been initialized yet
   const hasStoredToken = typeof window !== 'undefined' && sessionStorage.getItem('token')
@@ -26,7 +27,8 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    // Save the current location so we can redirect back after login
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />
   }
 
   if (requireAdmin && user?.role !== 1) {

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { strategistStore } from '../../store/strategistStore'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Pagination } from '../../components/ui/Pagination'
 import { Input } from '../../components/ui/Input'
 import { Button } from '../../components/ui/Button'
-import { Search, Grid3x3 } from 'lucide-react'
+import { Search, Grid3x3, Eye } from 'lucide-react'
 import { CountryFlag } from '../../components/ui/CountryFlag'
 import { StrategistBadge } from '../../components/StrategistBadge'
 
@@ -95,9 +96,11 @@ export const Strategists = () => {
                     </div>
                   </div>
 
-                  {/* Profile Image - absolute overlap */}
+                  {/* Profile Image - clickable */}
                   <div className="relative flex justify-center mb-4" style={{ height: '48px' }}>
-                    <div className="absolute left-1/2 -translate-x-1/2 -top-12 h-24 w-24 rounded-full bg-gray-200 border-4 border-white overflow-hidden shadow-md">
+                    <Link 
+                      to={`/strategists/${strategist.id}`}
+                      className="absolute left-1/2 -translate-x-1/2 -top-12 h-24 w-24 rounded-full bg-gray-200 border-4 border-white overflow-hidden shadow-md hover:ring-4 hover:ring-[#05A346]/30 transition-all">
                       {strategist.profilePhotoUrl ? (
                         <img
                           src={strategist.profilePhotoUrl}
@@ -111,20 +114,31 @@ export const Strategists = () => {
                           </span>
                         </div>
                       )}
-                    </div>
+                    </Link>
                   </div>
 
-                  {/* Name and Badge */}
+                  {/* Name and Badge - clickable */}
                   <div className="text-center px-4 pb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2 justify-center">
+                    <Link 
+                      to={`/strategists/${strategist.id}`}
+                      className="text-lg font-semibold text-gray-900 mb-1 flex items-center gap-2 justify-center hover:text-[#05A346] transition-colors"
+                    >
                       {strategist.fullName || `${strategist.firstName} ${strategist.lastName}` || 'Unknown'}
                       <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
-                    </h3>
+                    </Link>
                     {strategist.country && (
-                      <div className="flex justify-center items-center">
+                      <div className="flex justify-center items-center mt-1">
                         <CountryFlag countryName={strategist.country} />
                       </div>
                     )}
+                    {/* View Profile Button */}
+                    <Link
+                      to={`/strategists/${strategist.id}`}
+                      className="inline-flex items-center gap-2 mt-3 px-4 py-2 text-sm font-medium text-[#05A346] bg-[#05A346]/10 rounded-lg hover:bg-[#05A346] hover:text-white transition-colors"
+                    >
+                      <Eye className="w-4 h-4" />
+                      View Profile
+                    </Link>
                   </div>
                 </div>
               ))}

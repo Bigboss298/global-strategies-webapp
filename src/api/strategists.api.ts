@@ -14,16 +14,18 @@ interface PagedResult<T> {
 export const strategistsApi = {
   /**
    * Get all users with pagination
-   * GET /api/user/paged?PageNumber=1&PageSize=10
+   * GET /api/user/paged?PageNumber=1&PageSize=10&search=query
    */
   getAll: async (params?: {
     pageNumber?: number
     pageSize?: number
+    search?: string
   }): Promise<PagedResult<User>> => {
     const response = await axiosInstance.get<PagedResult<User>>('/user/paged', { 
       params: {
         PageNumber: params?.pageNumber || 1,
-        PageSize: params?.pageSize || 12
+        PageSize: params?.pageSize || 12,
+        ...(params?.search && { search: params.search })
       }
     })
     return response.data

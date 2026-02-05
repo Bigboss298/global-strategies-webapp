@@ -39,6 +39,11 @@ import StrategistDashboard from './pages/strategist/StrategistDashboard'
 import StrategistFeed from './pages/strategist/StrategistFeed'
 import MyReports from './pages/strategist/MyReports'
 import StrategistProfile from './pages/strategist/Profile'
+import BrowseStrategists from './pages/strategist/BrowseStrategists'
+import ViewStrategist from './pages/strategist/ViewStrategist'
+import BrowseProjects from './pages/strategist/BrowseProjects'
+import ViewProject from './pages/strategist/ViewProject'
+import StrategistReportDetail from './pages/strategist/ReportDetail'
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +52,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'strategists', element: <Strategists /> },
+      { path: 'strategists/:id', element: <ViewStrategist /> },
       { path: 'about', element: <About /> },
       { path: 'activities', element: <Activities /> },
       { path: 'login', element: <Login /> },
@@ -88,7 +94,12 @@ export const router = createBrowserRouter([
       { path: 'feed', element: <StrategistFeed /> },
       { path: 'invite', element: <OrganizationInvite /> },
       { path: 'strategists', element: <OrganizationStrategists /> },
+      { path: 'browse-strategists', element: <BrowseStrategists /> },
+      { path: 'view-strategist/:id', element: <ViewStrategist /> },
+      { path: 'projects', element: <BrowseProjects /> },
+      { path: 'projects/:id', element: <ViewProject /> },
       { path: 'reports', element: <OrganizationReports /> },
+      { path: 'reports/:id', element: <StrategistReportDetail /> },
       { path: 'profile', element: <OrganizationProfile /> },
     ],
   },
@@ -104,6 +115,11 @@ export const router = createBrowserRouter([
       { path: 'dashboard', element: <StrategistFeed /> },
       { path: 'my-reports', element: <MyReports /> },
       { path: 'profile', element: <StrategistProfile /> },
+      { path: 'browse', element: <BrowseStrategists /> },
+      { path: 'view/:id', element: <ViewStrategist /> },
+      { path: 'projects', element: <BrowseProjects /> },
+      { path: 'projects/:id', element: <ViewProject /> },
+      { path: 'reports/:id', element: <StrategistReportDetail /> },
     ],
   },
   {

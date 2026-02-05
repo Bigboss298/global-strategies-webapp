@@ -72,6 +72,9 @@ interface StrategistDashboardState {
   // My Reports
   myReports: ReportFeed[]
   isLoadingMyReports: boolean
+
+  // Other Strategist's Reports (for viewing profiles)
+  reports: ReportFeed[]
   
   // Projects & Categories
   categories: Category[]
@@ -90,6 +93,7 @@ interface StrategistDashboardState {
   fetchFeed: () => Promise<void>
   fetchFeedByProject: (projectId: string) => Promise<void>
   fetchMyReports: (userId: string) => Promise<void>
+  fetchReportsByAuthor: (authorId: string) => Promise<void>
   
   // Actions - Submit Report
   submitReport: (data: {
@@ -122,6 +126,7 @@ export const strategistDashboardStore = create<StrategistDashboardState>((set, g
   isLoadingFeed: false,
   myReports: [],
   isLoadingMyReports: false,
+  reports: [],
   categories: [],
   projects: [],
   fields: [],
@@ -177,6 +182,24 @@ export const strategistDashboardStore = create<StrategistDashboardState>((set, g
       set({
         isLoadingMyReports: false,
         error: error.response?.data?.message || 'Failed to fetch my reports',
+      })
+    }
+  },
+
+  // Fetch reports by author (for viewing other strategists' profiles)
+  fetchReportsByAuthor: async (authorId) => {
+    set({ isLoadingFeed: true, error: null })
+    try {
+      const response = await axiosInstance.get<ReportFeed[]>(`/report/strategist/${authorId}`)
+      set({
+        reports: response.data,
+        isLoadingFeed: false,
+      })
+    } catch (error: any) {
+      set({
+        reports: [],
+        isLoadingFeed: false,
+        error: error.response?.data?.message || 'Failed to fetch reports',
       })
     }
   },

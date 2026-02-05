@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, FileText, LogOut, Building2, UserPlus, User } from 'lucide-react'
+import { LayoutDashboard, Users, FileText, LogOut, Building2, UserPlus, User, FolderKanban } from 'lucide-react'
 import { authStore } from '../../store/authStore'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
 
@@ -18,6 +18,8 @@ export default function OrganizationDashboard() {
     { id: 'feed', label: 'Feed', path: '/organization/feed', icon: FileText },
     { id: 'invite', label: 'Invite Members', path: '/organization/invite', icon: UserPlus },
     { id: 'strategists', label: 'Strategists', path: '/organization/strategists', icon: Users },
+    { id: 'browse-strategists', label: 'Browse All', path: '/organization/browse-strategists', icon: Users },
+    { id: 'projects', label: 'Projects', path: '/organization/projects', icon: FolderKanban },
     { id: 'reports', label: 'Reports', path: '/organization/reports', icon: FileText },
     { id: 'profile', label: 'Profile', path: '/organization/profile', icon: User },
   ]

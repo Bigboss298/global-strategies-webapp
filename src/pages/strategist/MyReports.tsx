@@ -1,5 +1,5 @@
 import { StrategistBadge } from '../../components/StrategistBadge'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import { authStore } from '../../store/authStore'
 import TBPLoader from '../../components/TBPLoader'
@@ -31,6 +31,7 @@ export default function MyReports() {
   const user = authStore((state) => state.user)
   const { myReports, isLoadingMyReports, fetchMyReports, categories, projects, fields, fetchCategories, fetchProjects, fetchFieldsByProject, submitReport, error } = strategistDashboardStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [formData, setFormData] = useState({
     title: '',
     content: '',
@@ -50,11 +51,43 @@ export default function MyReports() {
     ? fields.filter((f) => f.projectId === formData.projectId)
     : fields
 
+  // Filter reports based on search query from navbar
+  const filteredReports = useMemo(() => {
+    if (!searchQuery.trim()) return myReports
+    const query = searchQuery.toLowerCase()
+    return myReports.filter(report => 
+      report.title.toLowerCase().includes(query) ||
+      report.content.toLowerCase().includes(query) ||
+      report.projectName?.toLowerCase().includes(query) ||
+      report.fieldName?.toLowerCase().includes(query) ||
+      report.categoryName?.toLowerCase().includes(query)
+    )
+  }, [myReports, searchQuery])
+
   useEffect(() => {
     if (user?.id) {
       fetchMyReports(user.id)
     }
   }, [user])
+
+  // Listen for search events from navbar
+  useEffect(() => {
+    const handleSearchMyReports = (event: CustomEvent) => {
+      setSearchQuery(event.detail.query || '')
+    }
+
+    const handleClearSearch = () => {
+      setSearchQuery('')
+    }
+
+    window.addEventListener('searchMyReports', handleSearchMyReports as EventListener)
+    window.addEventListener('clearGlobalSearch', handleClearSearch)
+
+    return () => {
+      window.removeEventListener('searchMyReports', handleSearchMyReports as EventListener)
+      window.removeEventListener('clearGlobalSearch', handleClearSearch)
+    }
+  }, [])
 
   useEffect(() => {
     if (isModalOpen) {
@@ -108,7 +141,11 @@ export default function MyReports() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#293749] mb-2">My Reports</h1>
-          <p className="text-[#293749]/60 text-sm sm:text-base">{myReports.length} {myReports.length === 1 ? 'report' : 'reports'} published</p>
+          <p className="text-[#293749]/60 text-sm sm:text-base">
+            {searchQuery ? `${filteredReports.length} of ${myReports.length}` : myReports.length} {myReports.length === 1 ? 'report' : 'reports'} 
+            {searchQuery && ` matching "${searchQuery}"`}
+            {!searchQuery && ' published'}
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -132,8 +169,30 @@ export default function MyReports() {
         </div>
       )}
 
+      {/* Search indicator */}
+      {searchQuery && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
+          <span className="text-sm text-blue-700">
+            Searching for: <strong>"{searchQuery}"</strong>
+          </span>
+          <button
+            onClick={() => {
+              setSearchQuery('')
+              window.dispatchEvent(new CustomEvent('clearGlobalSearch'))
+            }}
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       <div className="space-y-6">
-        {myReports.map((report) => (
+        {filteredReports.length === 0 && searchQuery ? (
+          <div className="text-center py-12 bg-white rounded-xl shadow-sm">
+            <p className="text-gray-500">No reports found matching "{searchQuery}"</p>
+          </div>
+        ) : filteredReports.map((report) => (
           <div
             key={report.id}
             className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
@@ -205,7 +264,7 @@ export default function MyReports() {
         ))}
       </div>
 
-      {myReports.length === 0 && (
+      {myReports.length === 0 && !searchQuery && (
         <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-sm border border-gray-100">
           <div className="w-20 h-20 bg-[#05A346]/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <Plus className="w-10 h-10 text-[#05A346]" />

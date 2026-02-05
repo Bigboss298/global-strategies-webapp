@@ -16,7 +16,7 @@ interface StrategistState {
   isLoading: boolean
   error: string | null
   searchQuery: string
-  fetchStrategists: (params?: { pageNumber?: number; pageSize?: number }) => Promise<void>
+  fetchStrategists: (params?: { pageNumber?: number; pageSize?: number; search?: string }) => Promise<void>
   fetchStrategistById: (id: string) => Promise<void>
   updateProfile: (id: string, data: {
     fullName?: string
@@ -29,7 +29,7 @@ interface StrategistState {
   clearError: () => void
 }
 
-export const strategistStore = create<StrategistState>((set) => ({
+export const strategistStore = create<StrategistState>((set, get) => ({
   strategists: [],
   currentStrategist: null,
   pagination: {
@@ -47,7 +47,12 @@ export const strategistStore = create<StrategistState>((set) => ({
   fetchStrategists: async (params = {}) => {
     set({ isLoading: true, error: null })
     try {
-      const response = await strategistsApi.getAll(params)
+      // Include the current search query if not explicitly provided
+      const searchQuery = params.search !== undefined ? params.search : get().searchQuery
+      const response = await strategistsApi.getAll({
+        ...params,
+        search: searchQuery || undefined
+      })
       set({
         strategists: response.items,
         pagination: {

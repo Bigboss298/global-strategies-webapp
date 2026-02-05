@@ -1,5 +1,6 @@
 import { StrategistBadge } from '../../components/StrategistBadge'
 import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import { authStore } from '../../store/authStore'
 import { CountryFlag } from '../../components/ui/CountryFlag'
@@ -29,6 +30,7 @@ const formatDateTime = (dateString: string | undefined) => {
 }
 
 export default function StrategistFeed() {
+  const location = useLocation()
   const { feed, isLoadingFeed, fetchFeed, fetchFeedByProject, comments, fetchCommentsByReport, postComment, error } = strategistDashboardStore()
   const { user } = authStore()
   const [expandedReport, setExpandedReport] = useState<string | null>(null)
@@ -36,6 +38,12 @@ export default function StrategistFeed() {
   const [reactingReports, setReactingReports] = useState<Set<string>>(new Set())
   const [commentError, setCommentError] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState<{ url: string; alt: string } | null>(null)
+
+  // Determine the base path based on current route
+  const isOrganization = location.pathname.startsWith('/organization')
+  const isAdmin = location.pathname.startsWith('/admin')
+  const viewStrategistPath = isAdmin ? '/admin/users' : isOrganization ? '/organization/view-strategist' : '/strategist/view'
+  const reportDetailPath = isAdmin ? '/admin/reports' : isOrganization ? '/organization/reports' : '/strategist/reports'
 
   useEffect(() => {
     fetchFeed()
@@ -144,24 +152,27 @@ export default function StrategistFeed() {
                 {/* Post Header */}
                 <div className="px-4 pt-3 pb-0">
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0">
+                    <Link to={`${viewStrategistPath}/${report.strategistId}`} className="flex-shrink-0">
                       {report.strategistProfilePhotoUrl ? (
                         <img
                           src={report.strategistProfilePhotoUrl}
                           alt={`${report.strategistFirstName} ${report.strategistLastName}`}
-                          className="w-12 h-12 rounded-full object-cover"
+                          className="w-12 h-12 rounded-full object-cover hover:ring-2 hover:ring-[#05A346] transition-all"
                         />
                       ) : (
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-[#FEFEFE] font-semibold text-base">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-[#FEFEFE] font-semibold text-base hover:ring-2 hover:ring-[#05A346] transition-all">
                           {(report.strategistFirstName || 'U').charAt(0).toUpperCase()}
                         </div>
                       )}
-                    </div>
+                    </Link>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-[#293749] text-sm hover:text-[#05A346] cursor-pointer flex items-center gap-2">
+                      <Link 
+                        to={`${viewStrategistPath}/${report.strategistId}`}
+                        className="font-semibold text-[#293749] text-sm hover:text-[#05A346] cursor-pointer flex items-center gap-2 transition-colors"
+                      >
                         {report.strategistFirstName} {report.strategistLastName}
                         <StrategistBadge badgeType={report.badgeType ?? 0} withDot={true} />
-                      </p>
+                      </Link>
                       <div className="flex items-center gap-1 text-xs text-[#293749]/60">
                         {report.strategistCountry && (
                           <>
@@ -177,7 +188,9 @@ export default function StrategistFeed() {
 
                 {/* Post Content */}
                 <div className="px-4 pt-3 pb-2">
-                  <h3 className="text-base font-semibold text-[#293749] mb-2 leading-snug">{report.title}</h3>
+                  <Link to={`${reportDetailPath}/${report.id}`}>
+                    <h3 className="text-base font-semibold text-[#293749] mb-2 leading-snug hover:text-[#05A346] transition-colors cursor-pointer">{report.title}</h3>
+                  </Link>
                   <p className="text-sm text-[#293749]/90 leading-relaxed whitespace-pre-wrap">{report.content}</p>
                 </div>
 

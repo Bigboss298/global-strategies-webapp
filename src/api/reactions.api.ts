@@ -35,10 +35,12 @@ export interface Comment {
   id: string
   reportId: string
   strategistId: string
+  strategistName: string
+  strategistProfilePhotoUrl?: string
+  badgeType?: number
   content: string
-  dateCreated: string
-  strategistFirstName?: string
-  strategistLastName?: string
+  createdAt: string
+  updatedAt?: string
 }
 
 export const reactionsApi = {

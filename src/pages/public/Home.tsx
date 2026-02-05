@@ -191,9 +191,10 @@ export const Home = () => {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 {strategists.map((strategist) => (
-                  <div
+                  <Link
                     key={strategist.id}
-                    className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                    to={`/strategists/${strategist.id}`}
+                    className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow block"
                   >
                     {/* Background Map Banner */}
                     <div className="h-20 sm:h-24 md:h-28 bg-gradient-to-br from-teal-700 via-teal-600 to-green-600 relative overflow-hidden">
@@ -256,7 +257,7 @@ export const Home = () => {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
 

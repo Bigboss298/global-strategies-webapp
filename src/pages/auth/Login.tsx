@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { authStore } from '../../store/authStore'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
@@ -9,11 +9,15 @@ import tbpLogo from '../../assets/TBP_logo.jpeg'
 
 export const Login = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const { login, isLoading, error, clearError } = authStore()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   })
+
+  // Get the redirect URL from location state
+  const from = (location.state as { from?: string })?.from
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,16 +25,22 @@ export const Login = () => {
     try {
       const user = await login(formData.email, formData.password)
       
+      // If there's a redirect URL, use it (for strategist/corporate users)
+      if (from && (user.role === 2 || user.role === 4)) {
+        navigate(from)
+        return
+      }
+      
       // Route based on user role
       if (user.role === 1) {
         // Admin
         navigate('/admin')
       } else if (user.role === 3) {
         // CorporateAdmin
-        navigate('/organization/dashboard')
+        navigate(from || '/organization/dashboard')
       } else {
         // Strategist or CorporateTeam (2 or 4)
-        navigate('/strategist/dashboard')
+        navigate(from || '/strategist/dashboard')
       }
     } catch (err) {
       // Error is handled by store
