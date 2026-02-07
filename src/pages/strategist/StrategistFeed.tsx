@@ -284,48 +284,48 @@ export default function StrategistFeed() {
                 </div>
 
                 {/* Action Buttons - LinkedIn style */}
-                <div className="px-2 py-1 flex items-center justify-around border-t border-gray-100">
+                <div className="px-1 sm:px-2 py-1 flex items-center justify-around border-t border-gray-100">
                   <button
                     onClick={() => handleReaction(report.id, ReactionType.Like)}
                     disabled={reactingReports.has(report.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium tbp-transition ${
+                    className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium tbp-transition ${
                       report.userReaction === 'Like'
                         ? 'text-[#05A346]'
                         : 'text-[#293749]/70 hover:bg-gray-100'
                     } disabled:opacity-50`}
                   >
-                    <span className="text-lg">👍</span>
+                    <span className="text-base sm:text-lg">👍</span>
                     <span>Like</span>
                   </button>
                   <button
                     onClick={() => handleReaction(report.id, ReactionType.Love)}
                     disabled={reactingReports.has(report.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium tbp-transition ${
+                    className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium tbp-transition ${
                       report.userReaction === 'Love'
                         ? 'text-red-600'
                         : 'text-[#293749]/70 hover:bg-gray-100'
                     } disabled:opacity-50`}
                   >
-                    <span className="text-lg">❤️</span>
+                    <span className="text-base sm:text-lg">❤️</span>
                     <span>Love</span>
                   </button>
                   <button
                     onClick={() => handleReaction(report.id, ReactionType.Insightful)}
                     disabled={reactingReports.has(report.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium tbp-transition ${
+                    className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium tbp-transition ${
                       report.userReaction === 'Insightful'
                         ? 'text-yellow-600'
                         : 'text-[#293749]/70 hover:bg-gray-100'
                     } disabled:opacity-50`}
                   >
-                    <span className="text-lg">💡</span>
-                    <span>Insightful</span>
+                    <span className="text-base sm:text-lg">💡</span>
+                    <span className="truncate">Insightful</span>
                   </button>
                   <button
                     onClick={() => handleExpandReport(report.id)}
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-[#293749]/70 hover:bg-gray-100 tbp-transition"
+                    className="flex-1 flex items-center justify-center gap-1 sm:gap-2 px-1 sm:px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium text-[#293749]/70 hover:bg-gray-100 tbp-transition"
                   >
-                    <span className="text-lg">💬</span>
+                    <span className="text-base sm:text-lg">💬</span>
                     <span>Comment</span>
                   </button>
                 </div>
@@ -348,33 +348,32 @@ export default function StrategistFeed() {
                           </div>
                         </div>
                       )}
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-3">
                         {user?.profilePhotoUrl ? (
                           <img
                             src={user.profilePhotoUrl}
                             alt={`${user.firstName} ${user.lastName}`}
-                            className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-[#FEFEFE] font-semibold text-sm flex-shrink-0">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#05A346] to-[#048A3B] flex items-center justify-center text-[#FEFEFE] font-semibold text-sm flex-shrink-0">
                             {(user?.firstName || 'U').charAt(0).toUpperCase()}
                           </div>
                         )}
-                        <div className="flex-1">
-                          <textarea
-                            value={commentText}
-                            onChange={(e) => setCommentText(e.target.value)}
-                            placeholder="Write a comment..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-[#05A346] text-sm"
-                            rows={1}
-                          />
-                          <button
-                            onClick={() => handlePostComment(report.id)}
-                            className="mt-2 px-4 py-2 bg-[#05A346] text-[#FEFEFE] rounded-full hover:bg-[#048A3B] font-medium text-sm tbp-transition"
-                          >
-                            Post Comment
-                          </button>
-                        </div>
+                        <textarea
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          placeholder="Write a comment..."
+                          className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-full resize-none focus:outline-none focus:ring-2 focus:ring-[#05A346] text-sm"
+                          rows={1}
+                        />
+                        <button
+                          onClick={() => handlePostComment(report.id)}
+                          disabled={!commentText.trim()}
+                          className="px-3 sm:px-4 py-2 bg-[#05A346] text-[#FEFEFE] rounded-full hover:bg-[#048A3B] font-medium text-xs sm:text-sm tbp-transition flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Post
+                        </button>
                       </div>
                     </div>
 
@@ -387,7 +386,7 @@ export default function StrategistFeed() {
                               <img
                                 src={comment.strategistProfilePhotoUrl}
                                 alt={comment.strategistName || 'User'}
-                                className="w-16 h-16 rounded-full object-cover"
+                                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0"
                               />
                             ) : (
                               <div className="w-8 h-8 bg-gradient-to-br from-[#183A64] to-[#293749] rounded-full flex items-center justify-center text-sm font-semibold text-[#FEFEFE]">

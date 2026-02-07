@@ -45,6 +45,9 @@ import BrowseProjects from './pages/strategist/BrowseProjects'
 import ViewProject from './pages/strategist/ViewProject'
 import StrategistReportDetail from './pages/strategist/ReportDetail'
 
+// Chat Page
+import Chat from './pages/chat/Chat'
+
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -79,6 +82,7 @@ export const router = createBrowserRouter([
       { path: 'organizations', element: <Organizations /> },
       { path: 'users', element: <Users /> },
       { path: 'badges', element: <BadgeManagement /> },
+      { path: 'chat', element: <Chat /> },
     ],
   },
   {
@@ -101,6 +105,7 @@ export const router = createBrowserRouter([
       { path: 'reports', element: <OrganizationReports /> },
       { path: 'reports/:id', element: <StrategistReportDetail /> },
       { path: 'profile', element: <OrganizationProfile /> },
+      { path: 'chat', element: <Chat /> },
     ],
   },
   {
@@ -120,6 +125,7 @@ export const router = createBrowserRouter([
       { path: 'projects', element: <BrowseProjects /> },
       { path: 'projects/:id', element: <ViewProject /> },
       { path: 'reports/:id', element: <StrategistReportDetail /> },
+      { path: 'chat', element: <Chat /> },
     ],
   },
   {

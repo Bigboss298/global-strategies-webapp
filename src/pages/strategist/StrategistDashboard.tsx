@@ -1,8 +1,8 @@
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { Rss, FileText, User, LogOut, Search, X, Users, FolderKanban, Eye } from 'lucide-react'
+import { Rss, FileText, User, LogOut, Search, X, Users, FolderKanban, Eye, MessageCircle, ChevronDown } from 'lucide-react'
 import { authStore } from '../../store/authStore'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useContextSearch } from '../../hooks/useContextSearch'
 import { CountryFlag } from '../../components/ui/CountryFlag'
 import { StrategistBadge } from '../../components/StrategistBadge'
@@ -11,9 +11,24 @@ export default function StrategistDashboard() {
   const navigate = useNavigate()
   const location = useLocation()
   const { user, logout } = authStore()
+
+  const isChatRoute = location.pathname.startsWith('/strategist/chat')
   
   const [searchQuery, setSearchQuery] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  // Close user menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Use context-aware search hook
   const {
@@ -100,13 +115,13 @@ export default function StrategistDashboard() {
     { id: 'my-reports', label: 'My Reports', path: '/strategist/my-reports', icon: FileText },
     { id: 'strategists', label: 'Strategists', path: '/strategist/browse', icon: Users },
     { id: 'projects', label: 'Projects', path: '/strategist/projects', icon: FolderKanban },
-    { id: 'profile', label: 'Profile', path: '/strategist/profile', icon: User },
+    { id: 'chat', label: 'Messages', path: '/strategist/chat', icon: MessageCircle },
   ]
 
   return (
-    <div className="min-h-screen bg-[#F3F2EF] pb-16 md:pb-0">
+    <div className={`bg-[#F3F2EF] ${isChatRoute ? 'h-[100dvh] flex flex-col overflow-hidden' : 'min-h-screen pb-16 md:pb-0'}`}>
       {/* LinkedIn-style Top Navbar */}
-      <header className="bg-[#FEFEFE] border-b tbp-border sticky top-0 z-50 tbp-card-shadow">
+      <header className={`bg-[#FEFEFE] border-b tbp-border z-50 tbp-card-shadow ${isChatRoute ? 'flex-shrink-0' : 'sticky top-0'}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16 gap-4">
             {/* Left: Logo - Hidden on mobile */}
@@ -297,12 +312,15 @@ export default function StrategistDashboard() {
               })}
             </nav>
 
-            {/* Right: User Profile & Actions */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100">
+            {/* Right: User Profile & Actions (Dropdown) */}
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setShowUserMenu(prev => !prev)}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 tbp-transition"
+              >
                 {/* Badge - Show first on mobile, hide on desktop */}
                 <span className="inline-block px-2 py-0.5 bg-[#05A346] text-[#FEFEFE] text-xs font-medium rounded-full lg:hidden">Strategist</span>
-                
+
                 {user?.profilePhotoUrl ? (
                   <img
                     src={user.profilePhotoUrl}
@@ -314,7 +332,7 @@ export default function StrategistDashboard() {
                     {user?.firstName?.[0]}{user?.lastName?.[0]}
                   </div>
                 )}
-                
+
                 {/* Name and badge on desktop */}
                 <div className="hidden lg:flex flex-col items-start text-left">
                   <p className="text-sm font-semibold text-[#293749]">
@@ -322,27 +340,55 @@ export default function StrategistDashboard() {
                   </p>
                   <span className="inline-block px-2 py-0.5 bg-[#05A346] text-[#FEFEFE] text-xs font-medium rounded-full">Strategist</span>
                 </div>
-              </div>
 
-              <button
-                onClick={handleLogout}
-                className="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg text-[#293749]/70 hover:bg-gray-100 tbp-transition"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="hidden md:inline text-sm font-medium">Sign Out</span>
+                <ChevronDown className={`w-4 h-4 text-[#293749]/60 tbp-transition ${showUserMenu ? 'rotate-180' : ''}`} />
               </button>
+
+              {/* Dropdown Menu */}
+              {showUserMenu && (
+                <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+                  {/* User info header */}
+                  <div className="px-4 py-3 border-b border-gray-100">
+                    <p className="text-sm font-semibold text-[#293749] truncate">
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <p className="text-xs text-[#293749]/60 truncate">{user?.email}</p>
+                  </div>
+
+                  <Link
+                    to="/strategist/profile"
+                    onClick={() => setShowUserMenu(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#293749] hover:bg-gray-50 tbp-transition"
+                  >
+                    <User className="w-4 h-4" />
+                    Profile
+                  </Link>
+
+                  <button
+                    onClick={() => { setShowUserMenu(false); handleLogout() }}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 tbp-transition"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </header>
 
       {/* Content Area */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className={isChatRoute ? 'flex-1 min-h-0 flex flex-col overflow-hidden px-0' : 'max-w-7xl mx-auto px-4 py-6'}>
         <Outlet />
       </div>
 
       {/* Bottom Navigation - Mobile Only */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-[#FEFEFE] border-t tbp-border z-50 tbp-card-shadow">
+      <nav
+        id="mobile-bottom-nav"
+        data-fixed-bottom="true"
+        className={`md:hidden fixed bottom-0 left-0 right-0 bg-[#FEFEFE] border-t tbp-border z-50 tbp-card-shadow ${isChatRoute ? 'hidden' : ''}`}
+      >
         <div className="flex items-center justify-around h-16">
           {tabs.map((tab) => {
             const Icon = tab.icon
@@ -363,13 +409,6 @@ export default function StrategistDashboard() {
               </Link>
             )
           })}
-          <button
-            onClick={handleLogout}
-            className="flex flex-col items-center justify-center flex-1 h-full text-[#293749]/70 tbp-transition active:text-red-600"
-          >
-            <LogOut className="w-6 h-6" />
-            <span className="text-xs font-medium mt-1">Sign Out</span>
-          </button>
         </div>
       </nav>
     </div>

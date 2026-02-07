@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { strategistStore } from '../../store/strategistStore'
 import { strategistDashboardStore } from '../../store/strategist/strategistDashboardStore'
 import { authStore } from '../../store/authStore'
+import { chatApi } from '../../api/chat.api'
 import { StrategistBadge } from '../../components/StrategistBadge'
 import { CountryFlag } from '../../components/ui/CountryFlag'
 import TBPLoader from '../../components/TBPLoader'
@@ -14,6 +15,7 @@ import {
   Calendar,
   Heart,
   MessageSquare,
+  MessageCircle,
   ThumbsUp,
   FileText,
   User,
@@ -27,12 +29,14 @@ export default function ViewStrategist() {
   const location = useLocation()
   const { currentStrategist, isLoading, error, fetchStrategistById, clearError } = strategistStore()
   const { reports, fetchReportsByAuthor, isLoadingFeed } = strategistDashboardStore()
-  const { isAuthenticated } = authStore()
+  const { isAuthenticated, user } = authStore()
   const [activeTab, setActiveTab] = useState<'about' | 'reports'>('about')
+  const [isStartingChat, setIsStartingChat] = useState(false)
 
   // Determine if we're on a public route or protected route
   const isPublicRoute = location.pathname.startsWith('/strategists/')
   const isOrganization = location.pathname.startsWith('/organization')
+  const isAdmin = location.pathname.startsWith('/admin')
   
   // Set appropriate back path and report path based on context
   const backPath = isPublicRoute 
@@ -42,6 +46,20 @@ export default function ViewStrategist() {
       : '/strategist/browse'
   
   const reportDetailPath = isOrganization ? '/organization/reports' : '/strategist/reports'
+  const chatPath = isOrganization ? '/organization/chat' : isAdmin ? '/admin/chat' : '/strategist/chat'
+
+  const handleMessageClick = async () => {
+    if (!id || !isAuthenticated) return
+    setIsStartingChat(true)
+    try {
+      const room = await chatApi.createOrGetDirectChat({ otherUserId: id })
+      navigate(chatPath, { state: { activeRoomId: room.id } })
+    } catch (error) {
+      console.error('Failed to create chat:', error)
+    } finally {
+      setIsStartingChat(false)
+    }
+  }
 
   useEffect(() => {
     if (id) {
@@ -143,11 +161,13 @@ export default function ViewStrategist() {
 
           {/* Name and Badge */}
           <div className="mt-4">
-            <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="text-2xl font-bold text-[#293749]">
-                {strategist.fullName || `${strategist.firstName} ${strategist.lastName}`}
-              </h1>
-              <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl font-bold text-[#293749]">
+                  {strategist.fullName || `${strategist.firstName} ${strategist.lastName}`}
+                </h1>
+                <StrategistBadge badgeType={strategist.badgeType} withDot={true} />
+              </div>
             </div>
 
             {strategist.headline && (
@@ -179,6 +199,33 @@ export default function ViewStrategist() {
                 <span>Joined {formatDate(strategist.dateCreated)}</span>
               </div>
             </div>
+
+            {/* Action Buttons */}
+            {isAuthenticated && user?.id !== strategist.id && !isPublicRoute && (
+              <div className="mt-4 flex items-center gap-3">
+                <button
+                  onClick={handleMessageClick}
+                  disabled={isStartingChat}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-[#183A64] rounded-full hover:bg-[#183A64]/90 shadow-sm transition-colors disabled:opacity-50"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  {isStartingChat ? 'Starting chat...' : 'Message'}
+                </button>
+              </div>
+            )}
+
+            {/* Prompt to sign in on public route */}
+            {!isAuthenticated && isPublicRoute && (
+              <div className="mt-4">
+                <Link
+                  to="/login"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-[#05A346] rounded-full hover:bg-[#048A3B] shadow-sm transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Sign in to Message
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

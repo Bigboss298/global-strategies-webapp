@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Users, FileText, LogOut, Building2, UserPlus, User, FolderKanban } from 'lucide-react'
+import { LayoutDashboard, Users, FileText, LogOut, Building2, UserPlus, User, FolderKanban, MessageCircle } from 'lucide-react'
 import { authStore } from '../../store/authStore'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
 
@@ -7,6 +7,8 @@ export default function OrganizationDashboard() {
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = authStore()
+
+  const isChatRoute = location.pathname.startsWith('/organization/chat')
 
   const handleLogout = () => {
     logout()
@@ -21,11 +23,12 @@ export default function OrganizationDashboard() {
     { id: 'browse-strategists', label: 'Browse All', path: '/organization/browse-strategists', icon: Users },
     { id: 'projects', label: 'Projects', path: '/organization/projects', icon: FolderKanban },
     { id: 'reports', label: 'Reports', path: '/organization/reports', icon: FileText },
+    { id: 'chat', label: 'Messages', path: '/organization/chat', icon: MessageCircle },
     { id: 'profile', label: 'Profile', path: '/organization/profile', icon: User },
   ]
 
   return (
-    <div className="min-h-screen bg-[#F3F2EF] flex">
+    <div className={`bg-[#F3F2EF] flex ${isChatRoute ? 'h-[100dvh] overflow-hidden' : 'min-h-screen'}`}>
       {/* LinkedIn-style Sidebar - TBP Navy (#183A64) */}
       <aside className="w-64 bg-[#183A64] h-screen fixed left-0 top-0 flex-shrink-0 shadow-lg overflow-y-auto">
         <div className="p-6">
@@ -85,9 +88,9 @@ export default function OrganizationDashboard() {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 min-w-0 ml-64">
+      <div className={`flex-1 min-w-0 ml-64 ${isChatRoute ? 'flex flex-col h-full overflow-hidden' : ''}`}>
         {/* Top Header Bar */}
-        <header className="bg-[#FEFEFE] border-b tbp-border sticky top-0 z-40 tbp-card-shadow">
+        <header className={`bg-[#FEFEFE] border-b tbp-border z-40 tbp-card-shadow ${isChatRoute ? 'flex-shrink-0' : 'sticky top-0'}`}>
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
@@ -103,7 +106,7 @@ export default function OrganizationDashboard() {
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className={isChatRoute ? 'flex-1 min-h-0 flex flex-col overflow-hidden p-0' : 'p-6'}>
           <Outlet />
         </main>
       </div>

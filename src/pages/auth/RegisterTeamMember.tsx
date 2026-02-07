@@ -82,7 +82,7 @@ export const RegisterTeamMember = () => {
     setIsLoading(true)
     try {
       const { confirmPassword, ...registerData } = formData
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5194/api'}/Auth/register/team-member`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/Auth/register/team-member`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

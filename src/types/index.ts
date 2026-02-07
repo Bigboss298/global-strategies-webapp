@@ -237,3 +237,63 @@ export interface ApiError {
   errors?: Record<string, string[]>
 }
 
+// Chat Types
+export const RoomType = {
+  Direct: 0,
+  Project: 1
+} as const
+
+export type RoomType = (typeof RoomType)[keyof typeof RoomType]
+
+export interface ChatParticipant {
+  userId: string
+  fullName: string
+  profilePhotoUrl: string
+  joinedAt: string
+}
+
+export interface ChatMessage {
+  id: string
+  chatRoomId: string
+  senderId: string
+  senderName: string
+  senderProfilePhotoUrl: string
+  content: string
+  createdAt: string
+  isRead: boolean
+}
+
+export interface ChatRoom {
+  id: string
+  roomType: RoomType
+  projectId?: string
+  projectName?: string
+  createdAt: string
+  participants: ChatParticipant[]
+  lastMessage?: ChatMessage
+  unreadCount: number
+}
+
+export interface ChatMessagesPagedResult {
+  items: ChatMessage[]
+  pageNumber: number
+  pageSize: number
+  totalCount: number
+  totalPages: number
+  hasPrevious: boolean
+  hasNext: boolean
+}
+
+export interface SendMessageRequest {
+  chatRoomId: string
+  content: string
+}
+
+export interface CreateDirectChatRequest {
+  otherUserId: string
+}
+
+export interface CreateProjectChatRequest {
+  projectId: string
+}
+

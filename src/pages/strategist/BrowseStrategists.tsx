@@ -1,20 +1,36 @@
 import { useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { strategistStore } from '../../store/strategistStore'
+import { authStore } from '../../store/authStore'
+import { chatApi } from '../../api/chat.api'
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Pagination } from '../../components/ui/Pagination'
-import { Users, Eye } from 'lucide-react'
+import { Users, Eye, MessageCircle } from 'lucide-react'
 import { CountryFlag } from '../../components/ui/CountryFlag'
 import { StrategistBadge } from '../../components/StrategistBadge'
 
 export default function BrowseStrategists() {
   const location = useLocation()
+  const navigate = useNavigate()
   const { strategists, pagination, isLoading, fetchStrategists, setSearchQuery } = strategistStore()
+  const { user } = authStore()
 
   // Determine the base path based on current route
   const isOrganization = location.pathname.startsWith('/organization')
   const viewPath = isOrganization ? '/organization/view-strategist' : '/strategist/view'
+  const chatPath = isOrganization ? '/organization/chat' : '/strategist/chat'
+
+  const handleMessageClick = async (e: React.MouseEvent, strategistId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    try {
+      const room = await chatApi.createOrGetDirectChat({ otherUserId: strategistId })
+      navigate(chatPath, { state: { activeRoomId: room.id } })
+    } catch (error) {
+      console.error('Failed to create chat:', error)
+    }
+  }
 
   useEffect(() => {
     fetchStrategists({ pageNumber: 1, pageSize: 12 })
@@ -128,14 +144,26 @@ export default function BrowseStrategists() {
                     </div>
                   )}
 
-                  {/* View Profile Button */}
-                  <Link
-                    to={`${viewPath}/${strategist.id}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#05A346] bg-[#05A346]/10 rounded-lg hover:bg-[#05A346] hover:text-white transition-colors"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View Profile
-                  </Link>
+                  {/* Action Buttons */}
+                  <div className="flex items-center justify-center gap-2">
+                    <Link
+                      to={`${viewPath}/${strategist.id}`}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#05A346] bg-[#05A346]/10 rounded-lg hover:bg-[#05A346] hover:text-white transition-colors"
+                    >
+                      <Eye className="w-4 h-4" />
+                      View
+                    </Link>
+                    {user?.id !== strategist.id && (
+                      <button
+                        onClick={(e) => handleMessageClick(e, strategist.id)}
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#183A64] bg-[#183A64]/10 rounded-lg hover:bg-[#183A64] hover:text-white transition-colors"
+                        title="Send Message"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        Message
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

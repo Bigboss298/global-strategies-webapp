@@ -6,7 +6,6 @@ import { Input } from '../../components/ui/Input'
 import { Label } from '../../components/ui/Label'
 import { Card } from '../../components/ui/Card'
 import type { RegisterIndividualRequest, RegisterCorporateRequest } from '../../types'
-import tbpLogo from '../../assets/TBP_logo.jpeg'
 
 type RegistrationType = 'individual' | 'corporate'
 
@@ -177,13 +176,8 @@ export const Register = () => {
   return (
     <div className="min-h-screen bg-[#F3F2EF] flex items-center justify-center py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="w-full max-w-2xl">
-        {/* TBP Logo/Brand */}
+        {/* Brand Header */}
         <div className="text-center mb-4 sm:mb-6 md:mb-8">
-          <img 
-            src={tbpLogo} 
-            alt="TBP Logo" 
-            className="h-14 sm:h-16 md:h-20 w-auto mx-auto mb-3 sm:mb-4 object-contain"
-          />
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#183A64] mb-1 sm:mb-2">Join TBP</h1>
           <p className="text-sm sm:text-base text-[#293749]/70">Create your Global Strategist Platform account</p>
         </div>

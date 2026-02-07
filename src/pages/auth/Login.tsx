@@ -5,7 +5,6 @@ import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { Label } from '../../components/ui/Label'
 import { Card } from '../../components/ui/Card'
-import tbpLogo from '../../assets/TBP_logo.jpeg'
 
 export const Login = () => {
   const navigate = useNavigate()
@@ -50,11 +49,8 @@ export const Login = () => {
   return (
     <div className="min-h-screen bg-[#F3F2EF] flex items-center justify-center py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="w-full max-w-md">
-        {/* TBP Logo/Brand */}
+        {/* Brand Header */}
         <div className="text-center mb-4 sm:mb-6 md:mb-8">
-          <div className="inline-flex items-center justify-center mb-3 sm:mb-4">
-            <img src={tbpLogo} alt="TBP Logo" className="h-16 w-auto sm:h-20 md:h-24 object-contain" />
-          </div>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#183A64] mb-1 sm:mb-2">Welcome Back</h1>
           <p className="text-sm sm:text-base text-[#293749]/70">Sign in to your Global Strategist Platform account</p>
         </div>

@@ -13,7 +13,8 @@ import {
   FileText,
   Menu,
   X,
-  Award
+  Award,
+  MessageCircle
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import tbpLogo from '../../assets/TBP_logo.jpeg'
@@ -29,6 +30,8 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [currentDateTime, setCurrentDateTime] = useState(new Date())
+
+  const isChatRoute = location.pathname.startsWith('/admin/chat')
 
   useEffect(() => {
     if (user?.role !== 1) {
@@ -84,10 +87,11 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
     { path: '/admin/fields', label: 'Fields', icon: Tag },
     { path: '/admin/users', label: 'Users', icon: Users },
     { path: '/admin/badges', label: 'Badges', icon: Award },
+    { path: '/admin/chat', label: 'Messages', icon: MessageCircle },
   ]
 
   return (
-    <div className="min-h-screen bg-[#F3F2EF] flex">
+    <div className={`bg-[#F3F2EF] flex ${isChatRoute ? 'h-[100dvh] overflow-hidden' : 'min-h-screen'}`}>
       {/* Desktop Sidebar - LinkedIn-style - TBP Navy (#183A64) */}
       <aside className="hidden lg:block w-64 bg-[#183A64] h-screen fixed left-0 top-0 flex-shrink-0 shadow-lg overflow-y-auto">
         <div className="p-6">
@@ -143,9 +147,9 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 min-w-0 lg:ml-64">
+      <div className={`flex-1 min-w-0 lg:ml-64 ${isChatRoute ? 'flex flex-col h-full overflow-hidden' : ''}`}>
         {/* Top Header Bar */}
-        <header className="bg-[#FEFEFE] border-b tbp-border sticky top-0 z-40 tbp-card-shadow">
+        <header className={`bg-[#FEFEFE] border-b tbp-border z-40 tbp-card-shadow ${isChatRoute ? 'flex-shrink-0' : 'sticky top-0'}`}>
           <div className="px-4 sm:px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -243,7 +247,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
         )}
 
         {/* Page Content */}
-        <main className="p-4 sm:p-6">{children || <Outlet />}</main>
+        <main className={isChatRoute ? 'flex-1 min-h-0 flex flex-col overflow-hidden p-0' : 'p-4 sm:p-6'}>{children || <Outlet />}</main>
       </div>
 
       {/* Scroll to Top Button */}
