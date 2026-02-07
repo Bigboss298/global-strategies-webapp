@@ -9,30 +9,9 @@ const debugLog = (...args: any[]) => {
   if (isDev) console.log(...args)
 }
 
-const isAbsoluteHttpUrl = (value: string) => /^https?:\/\//i.test(value)
-
-// Resolve hub URL robustly across:
-// - VITE_API_BASE_URL='/api' (LAN dev via Vite proxy) => use current origin
-// - VITE_API_BASE_URL='https://<host>/api' (prod) => use that host
 const getHubUrl = () => {
-  const apiBase = (BASE_URL || '').trim()
-
-  if (apiBase && isAbsoluteHttpUrl(apiBase)) {
-    try {
-      const url = new URL(apiBase)
-      // remove trailing /api from path if present
-      url.pathname = url.pathname.replace(/\/api\/?$/, '')
-      url.pathname = `${url.pathname.replace(/\/$/, '')}/hubs/chat`
-      url.search = ''
-      url.hash = ''
-      return url.toString()
-    } catch {
-      // fall through
-    }
-  }
-
-  // Default: same-origin (works with Vite proxy for /hubs)
-  return new URL('/hubs/chat', window.location.origin).toString()
+  // Simply replace /api with /hubs/chat in the BASE_URL
+  return BASE_URL.replace(/\/api\/?$/, '/hubs/chat')
 }
 
 const normalizeIncomingMessage = (raw: any): ChatMessage => {
