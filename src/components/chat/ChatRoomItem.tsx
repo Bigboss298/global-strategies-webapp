@@ -23,7 +23,8 @@ export const ChatRoomItem = ({ room, isActive, currentUser, onClick }: ChatRoomI
     }
 
     // Direct chat - find the other participant
-    const otherParticipant = room.participants.find(p => p.userId !== currentUser?.id)
+    const participants = room.participants ?? []
+    const otherParticipant = participants.find(p => p.userId !== currentUser?.id)
     return {
       name: otherParticipant?.fullName || 'Unknown User',
       avatar: otherParticipant?.profilePhotoUrl || null,

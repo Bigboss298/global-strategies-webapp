@@ -38,9 +38,8 @@ export const ChatSidebar = ({ currentUser, onRoomSelect, onNewChat }: ChatSideba
       // Search by project name
       if (room.projectName?.toLowerCase().includes(query)) return true
       // Search by participant names
-      return room.participants.some(p => 
-        p.fullName.toLowerCase().includes(query)
-      )
+      const participants = room.participants ?? []
+      return participants.some(p => p.fullName.toLowerCase().includes(query))
     })
     setFilteredRooms(filtered)
   }, [rooms, searchQuery])

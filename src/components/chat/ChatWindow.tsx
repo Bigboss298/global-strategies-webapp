@@ -35,15 +35,17 @@ export const ChatWindow = ({ room, currentUser, onBack, isMobile = false }: Chat
     if (!room) return null
 
     if (room.roomType === RoomType.Project) {
+      const participantCount = room.participants?.length ?? 0
       return {
         name: room.projectName || 'Project Chat',
-        subtitle: `${room.participants.length} participants`,
+        subtitle: `${participantCount} participants`,
         avatar: null,
         icon: Users
       }
     }
 
-    const otherParticipant = room.participants.find(p => p.userId !== currentUser?.id)
+    const participants = room.participants ?? []
+    const otherParticipant = participants.find(p => p.userId !== currentUser?.id)
     return {
       name: otherParticipant?.fullName || 'Unknown User',
       subtitle: 'Direct message',
